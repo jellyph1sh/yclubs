@@ -168,3 +168,29 @@ exports.updateRoleMember = async (req, res) => {
   }
   res.json({ status: true });
 };
+
+
+//EVENT
+exports.getEvent = async (req, res) => {
+  let events = await Database.Read(
+    DBPATH,
+    "SELECT idEvent,idClub,name,description FROM events;"
+  );
+  res.json(events);
+};
+
+exports.addEvent = async (req, res) => {
+  const event = req.body;
+  const err = await Database.Write(
+    "INSERT INTO events(idClub,name,description) VALUES(?,?,?);",
+    event.idClub,
+    event.name,
+    event.description
+  );
+  if (err != null) {
+    console.error(err);
+    res.json({ status: false });
+    return;
+  }
+  res.json({ status: true });
+};
