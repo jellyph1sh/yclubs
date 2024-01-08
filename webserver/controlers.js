@@ -104,6 +104,30 @@ exports.addUser = async (req, res) => {
   res.json({ status: true });
 };
 
+exports.addClubMember = async (req, res) => {
+  const data = req.body;
+  const clubId = await Database.Read(
+    "SELECT idClub FROM clubs WHERE name=?;",
+    data.clubName
+  );
+  const roleId = await Database.Read(
+    "SELECT idRole FROM roles WHERE name=?;",
+    data.roleName
+  );
+  const err = await Database.Write(
+    "INSERT INRO membersClubs(idClub,idUser,idRole) VALUES(?,?,?);",
+    clubId,
+    data.userId,
+    roleId
+  );
+  if (err != null) {
+    console.error(err);
+    res.json({ status: false });
+    return;
+  }
+  res.json({ status: true });
+};
+
 //roles
 
 exports.addRole = async (req, res) => {
@@ -121,4 +145,26 @@ exports.addRole = async (req, res) => {
   res.json({ status: true });
 };
 
-
+exports.updateRoleMember = async (req, res) => {
+  const role = req.body;
+  const newRoleId = await Database.Read(
+    "SELECT roleId FROM roles WHERE name=?;",
+    role.roleName
+  );
+  const clubId = await Database.Read(
+    "SELECT idClub FROM clubs WHERE name=?;",
+    data.clubName
+  );
+  const err = await Database.Write(
+    "UPDATE membersRoles SET idRole=? WHERE idUser = ? AND idClub = ?;",
+    newRoleId,
+    role.userId,
+    clubId
+  );
+  if (err != null) {
+    console.error(err);
+    res.json({ status: false });
+    return;
+  }
+  res.json({ status: true });
+};
