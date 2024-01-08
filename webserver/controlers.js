@@ -60,9 +60,14 @@ exports.addClub = async (req, res) => {
   res.json({ status: true });
 };
 
+// TO DO
 exports.updateClub = async (req, res) => {
   const club = req.body;
-  const err = await Database.Write(DBPATH, "");
+  const clubId = await Database.Read(
+    "SELECT idClub FROM clubs WHERE name=?;",
+    data.clubName
+  );
+  const err = await Database.Write(DBPATH, "UPDATE ");
   if (err != null) {
     console.error(err);
     res.json({ status: false });
@@ -240,3 +245,4 @@ exports.deleteTagClub = async (req, res) => {
   }
   res.json({ status: true });
 };
+
