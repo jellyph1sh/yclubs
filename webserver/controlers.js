@@ -1,56 +1,102 @@
 const Database = require("./Database.js");
 const crypto = require("crypto");
-
 const DB_PATH = "./clubs.db";
+const Verif = require("./verifInput.js");
 
 //clubs
 exports.getClubs = async (req, res) => {
   let clubs = await Database.Read(
-    DBPATH,
+    DB_PATH,
     "SELECT idClub,idClubParent,name,description,capital FROM clubs;"
   );
   res.json(clubs);
 };
 
-
-
 exports.addClub = async (req, res) => {
   const club = req.body;
-  const parentClubId = await Database.Read(
-    "SELECT name FROM clubs WHERE name=?;",
-    club.parentClubName
-  );
+  if (!Verif.VerifName(club.name)) {
+    // invalid name or another club with this name should exist
+    res.json({ status: false, error: "invalidName" });
+    return;
+  }
+  if (!Verif.VerifName(club.description, 0, 255)) {
+    // invalid description length or invalid word are in description
+    res.json({ status: false, error: "invalidDescription" });
+    return;
+  }
+  if (!Verif.VerifName(club.parentClubName)) {
+    res.json({ status: false, error: "invalidParentClubName" });
+    return;
+  }
+  if (!Verif.VerifName(club.alias, 2, 5)) {
+    res.json({ status: false, error: "invalidAlias" });
+    return;
+  }
+  if (isNaN(parseInt(club.capital))) {
+    //not a number
+    res.json({ status: false, error: "invalidCapital" });
+    return;
+  }
+  if (!Verif.VerifImage(club.image)) {
+    //not a valid image link
+    res.json({ status: false, error: "invalidImage" });
+    return;
+  }
+  if (!Verif.VerifArray(club.tags.split(" "))) {
+    // invalid tags
+    res.json({ status: false, error: "invalidTag" });
+    return;
+  }
+  let parentClubId = null;
+  if (club.parentClubName != "none") {
+    parentClubId = await Database.Read(
+      DB_PATH,
+      "SELECT name FROM clubs WHERE name=?;",
+      club.parentClubName
+    );
+  }
   let err = await Database.Write(
-    DBPATH,
-    "INSERT INTO clubs(idClubParent,name,description,capital) VALUES(?,?,?,?)",
+    DB_PATH,
+    "INSERT INTO clubs(idClubParent,name,description,capital,alias,image) VALUES(?,?,?,?,?,?)",
     parentClubId,
     club.name,
     club.description,
-    club.capital
+    parseInt(club.capital),
+    club.alias,
+    club.image
   );
   if (err != null) {
     console.error(err);
-    res.json({ status: false });
+    res.json({ status: false, errorType: err.code });
     return;
   }
-  for (const tag in club.tags) {
+  const tags = club.tags.split(" ");
+  let clubId = await Database.Read(
+    DB_PATH,
+    "SELECT idClub FROM clubs WHERE name=?;",
+    club.name
+  );
+  clubId = clubId[0].idClub;
+  for (const tag of tags) {
     err = await Database.Write(
-      DBPATH,
+      DB_PATH,
       "INSERT INTO tags(name) VALUES(?);",
       tag
     );
     if (err != null) {
+      console.error("tag already create");
       console.error(err);
     }
-    const tagId = await Database.Read(
+    let tagId = await Database.Read(
       DB_PATH,
       "SELECT idTag FROM tags WHERE name=?",
       tag
     );
+    tagId = tagId[0].idTag;
     err = await Database.Write(
       DB_PATH,
       "INSERT INTO clubsTags(idClub,idTag) VALUES(?,?);",
-      club.clubId,
+      clubId,
       tagId
     );
     if (err != null) {
@@ -66,10 +112,17 @@ exports.addClub = async (req, res) => {
 exports.updateClub = async (req, res) => {
   const club = req.body;
   const clubId = await Database.Read(
+    DB_PATH,
     "SELECT idClub FROM clubs WHERE name=?;",
-    data.clubName
+    club.clubName
   );
-  const err = await Database.Write(DBPATH, "UPDATE ");
+  const err = await Database.Write(
+    DB_PATH,
+    "UPDATE clubs SET name=?, description=? WHERE idClub=?;",
+    club.newName,
+    club.newDescription,
+    clubId[0].idClub
+  );
   if (err != null) {
     console.error(err);
     res.json({ status: false });
@@ -87,44 +140,67 @@ const hashPassword = (algorithm, base, passwd) => {
 };
 
 exports.getUsers = async (req, res) => {
-  let users = await Database.Read(DBPATH, "");
+  let users = await Database.Read(
+    DB_PATH,
+    "SELECT lastname,firstname,email,password,isAdmin FROM users;"
+  );
   res.json(users);
 };
 
 exports.addUser = async (req, res) => {
   const user = req.body;
-  const password = hashPassword("sha256", "base64", password);
+  if (!Verif.VerifEmail(user.email) || !Verif.VerifInput(user.email)) {
+    res.json({ status: false, error: "invalidEmailFormat" });
+    return;
+  }
+  if (
+    !Verif.VerifName(user.firstname) ||
+    !Verif.VerifName(user.lastname)
+  ) {
+    res.json({ status: false, error: "invalidName" });
+    return;
+  }
+  if (!Verif.VerifInput(user.password)) {
+    res.json({ status: false, error: "invalidPassword" });
+    return;
+  }
+  const password = hashPassword("sha256", "base64", user.password);
   const err = await Database.Write(
-    "INSERT INTO user(lastname,firstname,email,password,isAdmin) VALUES(?,?,?,?,?);",
+    DB_PATH,
+    "INSERT INTO users(lastname,firstname,email,password,isAdmin) VALUES(?,?,?,?,?);",
     user.lastname,
     user.firstname,
     user.email,
     password,
-    user.isAdmin
+    false
   );
   if (err != null) {
     console.error(err);
     res.json({ status: false });
     return;
   }
+  console.log("an user has been successfully add");
   res.json({ status: true });
 };
 
 exports.addClubMember = async (req, res) => {
   const data = req.body;
   const clubId = await Database.Read(
+    DB_PATH,
     "SELECT idClub FROM clubs WHERE name=?;",
     data.clubName
   );
   const roleId = await Database.Read(
+    DB_PATH,
     "SELECT idRole FROM roles WHERE name=?;",
     data.roleName
   );
   const err = await Database.Write(
-    "INSERT INRO membersClubs(idClub,idUser,idRole) VALUES(?,?,?);",
-    clubId,
+    DB_PATH,
+    "INSERT INTO membersClubs(idClub,idUser,idRole) VALUES(?,?,?);",
+    clubId[0].idClub,
     data.userId,
-    roleId
+    roleId[0].idRole
   );
   if (err != null) {
     console.error(err);
@@ -139,6 +215,7 @@ exports.addClubMember = async (req, res) => {
 exports.addRole = async (req, res) => {
   const role = req.body;
   const err = await Database.Write(
+    DB_PATH,
     "INSERT INTO roles(name,description) VALUES(?,?);",
     role.name,
     role.description
@@ -148,24 +225,28 @@ exports.addRole = async (req, res) => {
     res.json({ status: false });
     return;
   }
+  console.log("a role has been successfully add");
   res.json({ status: true });
 };
 
 exports.updateRoleMember = async (req, res) => {
   const role = req.body;
   const newRoleId = await Database.Read(
+    DB_PATH,
     "SELECT roleId FROM roles WHERE name=?;",
     role.roleName
   );
   const clubId = await Database.Read(
+    DB_PATH,
     "SELECT idClub FROM clubs WHERE name=?;",
-    data.clubName
+    role.clubName
   );
   const err = await Database.Write(
+    DB_PATH,
     "UPDATE membersRoles SET idRole=? WHERE idUser = ? AND idClub = ?;",
-    newRoleId,
+    newRoleId[0].idRole,
     role.userId,
-    clubId
+    clubId[0].idClub
   );
   if (err != null) {
     console.error(err);
@@ -175,11 +256,10 @@ exports.updateRoleMember = async (req, res) => {
   res.json({ status: true });
 };
 
-
 //EVENT
-exports.getEvent = async (req, res) => {
-  let events = await Database.Read(
-    DBPATH,
+exports.getEvents = async (req, res) => {
+  const events = await Database.Read(
+    DB_PATH,
     "SELECT idEvent,idClub,name,description FROM events;"
   );
   res.json(events);
@@ -188,11 +268,13 @@ exports.getEvent = async (req, res) => {
 exports.addEvent = async (req, res) => {
   const event = req.body;
   const err = await Database.Write(
+    DB_PATH,
     "INSERT INTO events(idClub,name,description) VALUES(?,?,?);",
     event.idClub,
     event.name,
     event.description
   );
+  console.log("test");
   if (err != null) {
     console.error(err);
     res.json({ status: false });
@@ -202,10 +284,10 @@ exports.addEvent = async (req, res) => {
 };
 
 //TAG
-exports.addTag = async (req, res) => {
+exports.addTagToClub = async (req, res) => {
   const tag = req.body;
   err = await Database.Write(
-    DBPATH,
+    DB_PATH,
     "INSERT INTO tags(name) VALUES(?);",
     tag.name
   );
@@ -221,7 +303,7 @@ exports.addTag = async (req, res) => {
     DB_PATH,
     "INSERT INTO clubsTags(idClub,idTag) VALUES(?,?);",
     tag.clubId,
-    tagId
+    tagId[0].idTag
   );
   if (err != null) {
     console.error(err);
@@ -231,11 +313,10 @@ exports.addTag = async (req, res) => {
   res.json({ status: true });
 };
 
-
 exports.deleteTagClub = async (req, res) => {
   const tag = req.body;
   err = await Database.Write(
-    DBPATH,
+    DB_PATH,
     "DELETE FROM tags WHERE idClub=? AND idTag=?;",
     tag.idClub,
     tag.idTag
