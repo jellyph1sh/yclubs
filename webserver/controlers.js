@@ -341,6 +341,22 @@ exports.getOneClubsByName = async (clubName) => {
 
 exports.manageCapitalClub = async (req, res) => {
   const capitals = req.body;
+  if (!Verif.VerifName(capitals.CurrentClubName)) {
+    // invalid name or another club with this name should exist
+    res.json({ status: false, error: "invalidName" });
+    return;
+  }
+  if (!Verif.VerifName(capitals.GoalClubName)) {
+    // invalid name or another club with this name should exist
+    res.json({ status: false, error: "invalidName" });
+    return;
+  }
+  if (isNaN(parseInt(capitals.price))) {
+    //not a number
+    res.json({ status: false, error: "invalidCapital" });
+    return;
+  }
+
   let CapitalCurrentClub = 0
   let CapitalGoalClub = 0
 
@@ -351,7 +367,7 @@ exports.manageCapitalClub = async (req, res) => {
     CapitalCurrentClub = (currentClub.capital + capitals.price)
   } else {
     if (capitals.price<0){
-      res.json({ status: false });
+      res.json({ status: false, error: "price < 0" });
       return;
     }
     CapitalCurrentClub = (currentClub.capital - capitals.price)
@@ -387,7 +403,7 @@ exports.manageCapitalClub = async (req, res) => {
       }
     }
   } else {
-    res.json({ status: false });
+    res.json({ status: false, error: "price < 0" });
     return;
   }
   res.json({ status: true });
