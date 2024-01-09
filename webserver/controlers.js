@@ -154,8 +154,6 @@ exports.addUser = async (req, res) => {
     return;
   }
   if (
-    !Verif.VerifInput(user.lastname) ||
-    !Verif.VerifInput(user.firstname) ||
     !Verif.VerifName(user.firstname) ||
     !Verif.VerifName(user.lastname)
   ) {
