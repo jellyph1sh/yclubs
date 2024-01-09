@@ -1,0 +1,8 @@
+.stats-box {
+    position: absolute;
+    top: 10vh;
+    left: 40vw;
+    width: 20vw;
+    height: 40vh;
+    background-color: white;
+}
