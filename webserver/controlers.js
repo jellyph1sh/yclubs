@@ -82,7 +82,13 @@ exports.updateClub = async (req, res) => {
     "SELECT idClub FROM clubs WHERE name=?;",
     club.clubName
   );
-  const err = await Database.Write(DB_PATH, "UPDATE ");
+  const err = await Database.Write(
+    DB_PATH,
+    "UPDATE clubs SET name=?, description=? WHERE idClub=?;",
+    club.newName,
+    club.newDescription,
+    clubId[0].idClub
+  );
   if (err != null) {
     console.error(err);
     res.json({ status: false });
@@ -248,7 +254,6 @@ exports.addTag = async (req, res) => {
   res.json({ status: true });
 };
 
-
 exports.deleteTagClub = async (req, res) => {
   const tag = req.body;
   err = await Database.Write(
@@ -264,4 +269,3 @@ exports.deleteTagClub = async (req, res) => {
   }
   res.json({ status: true });
 };
-
