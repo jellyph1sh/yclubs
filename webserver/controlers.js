@@ -130,24 +130,28 @@ exports.addUser = async (req, res) => {
     res.json({ status: false });
     return;
   }
+  console.log("an user has been successfully add");
   res.json({ status: true });
 };
 
 exports.addClubMember = async (req, res) => {
   const data = req.body;
   const clubId = await Database.Read(
+    DB_PATH,
     "SELECT idClub FROM clubs WHERE name=?;",
     data.clubName
   );
   const roleId = await Database.Read(
+    DB_PATH,
     "SELECT idRole FROM roles WHERE name=?;",
     data.roleName
   );
   const err = await Database.Write(
-    "INSERT INRO membersClubs(idClub,idUser,idRole) VALUES(?,?,?);",
-    clubId,
+    DB_PATH,
+    "INSERT INTO membersClubs(idClub,idUser,idRole) VALUES(?,?,?);",
+    clubId[0].idClub,
     data.userId,
-    roleId
+    roleId[0].idRole
   );
   if (err != null) {
     console.error(err);
@@ -162,6 +166,7 @@ exports.addClubMember = async (req, res) => {
 exports.addRole = async (req, res) => {
   const role = req.body;
   const err = await Database.Write(
+    DB_PATH,
     "INSERT INTO roles(name,description) VALUES(?,?);",
     role.name,
     role.description
@@ -171,24 +176,28 @@ exports.addRole = async (req, res) => {
     res.json({ status: false });
     return;
   }
+  console.log("a role has been successfully add");
   res.json({ status: true });
 };
 
 exports.updateRoleMember = async (req, res) => {
   const role = req.body;
   const newRoleId = await Database.Read(
+    DB_PATH,
     "SELECT roleId FROM roles WHERE name=?;",
     role.roleName
   );
   const clubId = await Database.Read(
+    DB_PATH,
     "SELECT idClub FROM clubs WHERE name=?;",
-    data.clubName
+    role.clubName
   );
   const err = await Database.Write(
+    DB_PATH,
     "UPDATE membersRoles SET idRole=? WHERE idUser = ? AND idClub = ?;",
-    newRoleId,
+    newRoleId[0].idRole,
     role.userId,
-    clubId
+    clubId[0].idClub
   );
   if (err != null) {
     console.error(err);

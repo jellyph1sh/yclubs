@@ -12,7 +12,8 @@ router.post("/clubs/update", stuffCtrl.updateClub);
 router.get("/users/getall", stuffCtrl.getUsers);
 router.post("/users/add", stuffCtrl.addUser);
 
-router.post('/clubMember',stuffCtrl.addClubMember)
+router.post('/clubMember/add',stuffCtrl.addClubMember)
+router.post('/clubMember/update',stuffCtrl.updateRoleMember)
 
 //roles
 router.post("/roles/add", stuffCtrl.addRole);
