@@ -28,3 +28,35 @@ router.get("/events/getall", stuffCtrl.getEvents);
 router.post("/events/add", stuffCtrl.addEvent);
 
 module.exports = router;
+
+function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  const middle = Math.floor(arr.length / 2);
+  const left = arr.slice(0, middle);
+  const right = arr.slice(middle);
+
+  const fusion = (left, right) => {
+    let result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+      if (left[leftIndex] < right[rightIndex]) {
+        result.push(left[leftIndex]);
+        leftIndex++;
+      } else {
+        result.push(right[rightIndex]);
+        rightIndex++;
+      }
+    }
+
+    return result.concat(left.slice(leftIndex), right.slice(rightIndex));
+  };
+
+  return fusion(mergeSort(left), mergeSort(right));
+}
+a = 1;
+a = 2;
