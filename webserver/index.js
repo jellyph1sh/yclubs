@@ -1,7 +1,7 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
 
-const stuffRoutes = require('./routes.js');
+const stuffRoutes = require("./routes.js");
 
 const app = express();
 
@@ -10,11 +10,15 @@ const PORT = 3001;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:5173/", // allow the origin of the request
+  optionsSuccessStatus: 200,
+};
 
-app.use('/api', stuffRoutes);
+app.use(cors(corsOptions));
+app.use("/api", stuffRoutes);
 
 app.listen(PORT, () => {
-    console.log('Server started ! http://localhost:3001');
-    console.log(`Server now listening on ${PORT}`);
-})
+  console.log("Server started ! http://localhost:3001");
+  console.log(`Server now listening on ${PORT}`);
+});
