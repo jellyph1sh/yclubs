@@ -1,7 +1,7 @@
 const Database = require("./Database.js");
 const crypto = require("crypto");
-
 const DB_PATH = "./clubs.db";
+const Verif = require("./verifInput.js");
 
 //clubs
 exports.getClubs = async (req, res) => {
@@ -14,9 +14,43 @@ exports.getClubs = async (req, res) => {
 
 exports.addClub = async (req, res) => {
   const club = req.body;
+  if (!Verif.VerifName(club.name)) {
+    // invalid name or another club with this name should exist
+    res.json({ status: false, error: "invalidName" });
+    return;
+  }
+  if (!Verif.VerifName(club.description, 0, 255)) {
+    // invalid description length or invalid word are in description
+    res.json({ status: false, error: "invalidDescription" });
+    return;
+  }
+  if (!Verif.VerifName(club.parentClubName)) {
+    res.json({ status: false, error: "invalidParentClubName" });
+    return;
+  }
+  if (!Verif.VerifName(club.alias, 2, 5)) {
+    res.json({ status: false, error: "invalidAlias" });
+    return;
+  }
+  if (isNaN(parseInt(club.capital))) {
+    //not a number
+    res.json({ status: false, error: "invalidCapital" });
+    return;
+  }
+  if (!Verif.VerifImage(club.image)) {
+    //not a valid image link
+    res.json({ status: false, error: "invalidImage" });
+    return;
+  }
+  if (!Verif.VerifArray(club.tags.split(" "))) {
+    // invalid tags
+    res.json({ status: false, error: "invalidTag" });
+    return;
+  }
   let parentClubId = null;
   if (club.parentClubName != "none") {
     parentClubId = await Database.Read(
+      DB_PATH,
       "SELECT name FROM clubs WHERE name=?;",
       club.parentClubName
     );
@@ -115,6 +149,21 @@ exports.getUsers = async (req, res) => {
 
 exports.addUser = async (req, res) => {
   const user = req.body;
+  if (!Verif.VerifEmail(user.email) || !Verif.VerifInput(user.email)) {
+    res.json({ status: false, error: "invalidEmailFormat" });
+    return;
+  }
+  if (
+    !Verif.VerifName(user.firstname) ||
+    !Verif.VerifName(user.lastname)
+  ) {
+    res.json({ status: false, error: "invalidName" });
+    return;
+  }
+  if (!Verif.VerifInput(user.password)) {
+    res.json({ status: false, error: "invalidPassword" });
+    return;
+  }
   const password = hashPassword("sha256", "base64", user.password);
   const err = await Database.Write(
     DB_PATH,
@@ -123,7 +172,7 @@ exports.addUser = async (req, res) => {
     user.firstname,
     user.email,
     password,
-    user.isAdmin
+    false
   );
   if (err != null) {
     console.error(err);
