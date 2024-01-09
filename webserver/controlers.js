@@ -12,6 +12,8 @@ exports.getClubs = async (req, res) => {
   res.json(clubs);
 };
 
+
+
 exports.addClub = async (req, res) => {
   const club = req.body;
   const parentClubId = await Database.Read(
@@ -240,6 +242,70 @@ exports.deleteTagClub = async (req, res) => {
   );
   if (err != null) {
     console.error(err);
+    res.json({ status: false });
+    return;
+  }
+  res.json({ status: true });
+};
+
+exports.getOneClubsByName = async (clubName) => {
+  let clubs = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM clubs WHERE name=?;",
+    clubName
+  );
+  let club = clubs[0]
+  return(club);
+};
+
+exports.manageCapitalClub = async (req, res) => {
+  const capitals = req.body;
+  let CapitalCurrentClub = 0
+  let CapitalGoalClub = 0
+
+  let currentClub = await this.getOneClubsByName(capitals.CurrentClubName)
+  let goalClub = await this.getOneClubsByName(capitals.GoalClubName)
+
+  if (currentClub.idClub == goalClub.idClub){
+    CapitalCurrentClub = (currentClub.capital + capitals.price)
+  } else {
+    if (capitals.price<0){
+      res.json({ status: false });
+      return;
+    }
+    CapitalCurrentClub = (currentClub.capital - capitals.price)
+    CapitalGoalClub = (goalClub.capital + capitals.price)
+  }
+  
+  
+  if (CapitalCurrentClub >= 0 && CapitalGoalClub >= 0){
+    //update current club
+    const err = await Database.Write(
+      DB_PATH,
+      "UPDATE clubs SET capital=? WHERE idClub=?;",
+      CapitalCurrentClub,
+      currentClub.idClub
+    );
+    if (err != null) {
+      console.error(err);
+      res.json({ status: false });
+      return;
+    }
+    if (currentClub.idClub != goalClub.idClub){
+      //update goal club
+      const err2 = await Database.Write(
+        DB_PATH,
+        "UPDATE clubs SET capital=? WHERE idClub=?;",
+        CapitalGoalClub,
+        goalClub.idClub
+      );
+      if (err2 != null) {
+        console.error(err2);
+        res.json({ status: false });
+        return;
+      }
+    }
+  } else {
     res.json({ status: false });
     return;
   }
