@@ -51,6 +51,7 @@ exports.addClub = async (req, res) => {
     );
     if (err != null) {
       console.error("tag already create");
+      console.error(err);
     }
     let tagId = await Database.Read(
       DB_PATH,
@@ -217,4 +218,50 @@ exports.addEvent = async (req, res) => {
   res.json({ status: true });
 };
 
-//tags
+//TAG
+exports.addTag = async (req, res) => {
+  const tag = req.body;
+  err = await Database.Write(
+    DBPATH,
+    "INSERT INTO tags(name) VALUES(?);",
+    tag.name
+  );
+  if (err != null) {
+    console.error(err);
+  }
+  const tagId = await Database.Read(
+    DB_PATH,
+    "SELECT idTag FROM tags WHERE name=?",
+    tag
+  );
+  err = await Database.Write(
+    DB_PATH,
+    "INSERT INTO clubsTags(idClub,idTag) VALUES(?,?);",
+    tag.clubId,
+    tagId
+  );
+  if (err != null) {
+    console.error(err);
+    res.json({ status: false });
+    return;
+  }
+  res.json({ status: true });
+};
+
+
+exports.deleteTagClub = async (req, res) => {
+  const tag = req.body;
+  err = await Database.Write(
+    DBPATH,
+    "DELETE FROM tags WHERE idClub=? AND idTag=?;",
+    tag.idClub,
+    tag.idTag
+  );
+  if (err != null) {
+    console.error(err);
+    res.json({ status: false });
+    return;
+  }
+  res.json({ status: true });
+};
+
