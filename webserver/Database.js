@@ -65,7 +65,6 @@ class Database {
     return new Promise((resolve) => {
       Database.#db.run(query, args, (err) => {
         Database.#Close();
-        console.log("test write");
 
         if (err === null) return resolve(null);
         return resolve(err);

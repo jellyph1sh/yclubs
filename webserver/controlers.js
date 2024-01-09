@@ -23,37 +23,45 @@ exports.addClub = async (req, res) => {
   }
   let err = await Database.Write(
     DB_PATH,
-    "INSERT INTO clubs(idClubParent,name,description,capital) VALUES(?,?,?,?)",
+    "INSERT INTO clubs(idClubParent,name,description,capital,alias,image) VALUES(?,?,?,?,?,?)",
     parentClubId,
     club.name,
     club.description,
-    club.capital
+    parseInt(club.capital),
+    club.alias,
+    club.image
   );
   if (err != null) {
     console.error(err);
-    res.json({ status: false });
+    res.json({ status: false, errorType: err.code });
     return;
   }
   const tags = club.tags.split(" ");
-  for (const tag in tags) {
+  let clubId = await Database.Read(
+    DB_PATH,
+    "SELECT idClub FROM clubs WHERE name=?;",
+    club.name
+  );
+  clubId = clubId[0].idClub;
+  for (const tag of tags) {
     err = await Database.Write(
       DB_PATH,
       "INSERT INTO tags(name) VALUES(?);",
       tag
     );
     if (err != null) {
-      console.error(err);
-      return;
+      console.error("tag already create");
     }
-    const tagId = await Database.Read(
+    let tagId = await Database.Read(
       DB_PATH,
-      "SElECT idTag FROM tags WHERE name=?",
+      "SELECT idTag FROM tags WHERE name=?",
       tag
     );
+    tagId = tagId[0].idTag;
     err = await Database.Write(
       DB_PATH,
       "INSERT INTO clubsTags(idClub,idTag) VALUES(?,?);",
-      club.clubId,
+      clubId,
       tagId
     );
     if (err != null) {
@@ -69,8 +77,9 @@ exports.addClub = async (req, res) => {
 exports.updateClub = async (req, res) => {
   const club = req.body;
   const clubId = await Database.Read(
+    DB_PATH,
     "SELECT idClub FROM clubs WHERE name=?;",
-    data.clubName
+    club.clubName
   );
   const err = await Database.Write(DB_PATH, "UPDATE ");
   if (err != null) {
@@ -90,7 +99,10 @@ const hashPassword = (algorithm, base, passwd) => {
 };
 
 exports.getUsers = async (req, res) => {
-  let users = await Database.Read(DB_PATH, "SELECT lastname,firstname,email,password,isAdmin FROM users;");
+  let users = await Database.Read(
+    DB_PATH,
+    "SELECT lastname,firstname,email,password,isAdmin FROM users;"
+  );
   res.json(users);
 };
 
@@ -98,7 +110,8 @@ exports.addUser = async (req, res) => {
   const user = req.body;
   const password = hashPassword("sha256", "base64", user.password);
   const err = await Database.Write(
-    "INSERT INTO user(lastname,firstname,email,password,isAdmin) VALUES(?,?,?,?,?);",
+    DB_PATH,
+    "INSERT INTO users(lastname,firstname,email,password,isAdmin) VALUES(?,?,?,?,?);",
     user.lastname,
     user.firstname,
     user.email,
