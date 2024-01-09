@@ -1,5 +1,15 @@
+@font-face {
+  font-family: Monserrat;
+  src: url("../assets/fonts/Montserrat-VariableFont_wght.ttf");
+}
+
+@font-face {
+  font-family: MonserratItalic;
+  src: url("../assets/fonts/Montserrat-Italic-VariableFont_wght.ttf");
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Monserrat, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
