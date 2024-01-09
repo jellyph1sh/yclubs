@@ -12,20 +12,19 @@ router.post("/clubs/update", stuffCtrl.updateClub);
 router.get("/users/getall", stuffCtrl.getUsers);
 router.post("/users/add", stuffCtrl.addUser);
 
-router.post('/clubMember/add',stuffCtrl.addClubMember)
-router.post('/clubMember/update',stuffCtrl.updateRoleMember)
+router.post("/clubMember/add", stuffCtrl.addClubMember);
+router.post("/clubMember/update", stuffCtrl.updateRoleMember);
 
 //roles
 router.post("/roles/add", stuffCtrl.addRole);
-router.post('/updateRoleMember',stuffCtrl.updateRoleMember)
+router.post("/updateRoleMember", stuffCtrl.updateRoleMember);
 
 //tag
-router.post('/tags',stuffCtrl.addTag)
-router.delete('/tags',stuffCtrl.deleteTagClub)
+router.post("/tags", stuffCtrl.addTagToClub);
+router.delete("/tags", stuffCtrl.deleteTagClub);
 
 //event
-router.get("/events/getall", stuffCtrl.getEvent);
+router.get("/events/getall", stuffCtrl.getEvents);
 router.post("/events/add", stuffCtrl.addEvent);
 
 module.exports = router;
-

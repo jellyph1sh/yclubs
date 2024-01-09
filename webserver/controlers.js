@@ -208,8 +208,8 @@ exports.updateRoleMember = async (req, res) => {
 };
 
 //EVENT
-exports.getEvent = async (req, res) => {
-  let events = await Database.Read(
+exports.getEvents = async (req, res) => {
+  const events = await Database.Read(
     DB_PATH,
     "SELECT idEvent,idClub,name,description FROM events;"
   );
@@ -219,6 +219,7 @@ exports.getEvent = async (req, res) => {
 exports.addEvent = async (req, res) => {
   const event = req.body;
   const err = await Database.Write(
+    DB_PATH,
     "INSERT INTO events(idClub,name,description) VALUES(?,?,?);",
     event.idClub,
     event.name,
@@ -234,10 +235,10 @@ exports.addEvent = async (req, res) => {
 };
 
 //TAG
-exports.addTag = async (req, res) => {
+exports.addTagToClub = async (req, res) => {
   const tag = req.body;
   err = await Database.Write(
-    DBPATH,
+    DB_PATH,
     "INSERT INTO tags(name) VALUES(?);",
     tag.name
   );
@@ -253,7 +254,7 @@ exports.addTag = async (req, res) => {
     DB_PATH,
     "INSERT INTO clubsTags(idClub,idTag) VALUES(?,?);",
     tag.clubId,
-    tagId
+    tagId[0].idTag
   );
   if (err != null) {
     console.error(err);
@@ -266,7 +267,7 @@ exports.addTag = async (req, res) => {
 exports.deleteTagClub = async (req, res) => {
   const tag = req.body;
   err = await Database.Write(
-    DBPATH,
+    DB_PATH,
     "DELETE FROM tags WHERE idClub=? AND idTag=?;",
     tag.idClub,
     tag.idTag
