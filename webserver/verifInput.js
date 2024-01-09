@@ -1,4 +1,4 @@
-export const VerifInput = (s) => {
+exports.VerifInput = (s) => {
   const banStrings = ["<", ">", "select", "update", "delete", "from"];
   for (const banString in banStrings) {
     if (s.includes(banString)) {
@@ -8,8 +8,10 @@ export const VerifInput = (s) => {
   return true;
 };
 
-export const VerifEmail = (s) => {
-  return s
-    .toLowerCase()
-    .match("/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}$/");
+exports.VerifEmail = (s) => {
+  return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(s);
+};
+
+exports.VerifName = (s) => {
+  return /^[\w\s]*$/.test(s) && s.length < 25;
 };

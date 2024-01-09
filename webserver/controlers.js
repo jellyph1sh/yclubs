@@ -1,8 +1,7 @@
 const Database = require("./Database.js");
 const crypto = require("crypto");
 const DB_PATH = "./clubs.db";
-import VerifEmail from "./verifInput.js";
-import VerifInput from "./verifInput.js";
+const Verif = require("./verifInput.js");
 
 //clubs
 exports.getClubs = async (req, res) => {
@@ -115,16 +114,21 @@ exports.getUsers = async (req, res) => {
 };
 
 exports.addUser = async (req, res) => {
-  const user = req.body;
-  if (!VerifEmail(user.email) || !VerifInput(user.email)) {
+  const user = req.query;
+  if (!Verif.VerifEmail(user.email) || !Verif.VerifInput(user.email)) {
     res.json({ status: false, error: "invalidEmailFormat" });
     return;
   }
-  if (!VerifInput(user.lastname) || !VerifInput(user.firstname)) {
+  if (
+    !Verif.VerifInput(user.lastname) ||
+    !Verif.VerifInput(user.firstname) ||
+    !Verif.VerifName(user.firstname) ||
+    !Verif.VerifName(user.lastname)
+  ) {
     res.json({ status: false, error: "invalidName" });
     return;
   }
-  if (!VerifInput(user.password)) {
+  if (!Verif.VerifInput(user.password)) {
     res.json({ status: false, error: "invalidPassword" });
     return;
   }
@@ -136,7 +140,7 @@ exports.addUser = async (req, res) => {
     user.firstname,
     user.email,
     password,
-    user.isAdmin
+    false
   );
   if (err != null) {
     console.error(err);
