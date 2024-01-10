@@ -41,6 +41,7 @@ const VerifTags = (a) => {
 };
 
 // ManageVerif return an empty string if all data are valid otherwise it return the error code of the first error that is catch
+// This function is usefull for prevent sql injection or corrupt data
 //
 // Possible action :
 //    1) check if string data are valid
@@ -107,7 +108,11 @@ exports.ManageVerif = (elementsToCheck) => {
         }
         break;
       case "password":
-        if (!VerifInput(element.data)) {
+        if (
+          !VerifInput(element.data) ||
+          element.data.length < 3 ||
+          element.data == null
+        ) {
           return "invalidPassword";
         }
         break;

@@ -3,8 +3,8 @@ const crypto = require("crypto");
 const DB_PATH = "./clubs.db";
 const Verif = require("../verificationFunc/verifInput.js");
 const moment = require("moment");
-const hashFunc = require("../verificationFunc/password.js")
-
+const hashFunc = require("../verificationFunc/password.js");
+const stuffCtrlGet = require("./getControlers.js");
 
 // CLUBS
 exports.getClubs = async (req, res) => {
@@ -16,24 +16,28 @@ exports.getClubs = async (req, res) => {
 };
 
 exports.getOneClubByName = async (clubName) => {
-  let clubs = await Database.Read(
+  const verifResult = Verif.ManageVerif([
+    { dataType: "clubName", data: clubName },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
+    return;
+  }
+  const clubs = await Database.Read(
     DB_PATH,
     "SELECT * FROM clubs WHERE name=?;",
     clubName
   );
-  let club = clubs[0];
-  return club;
+  return clubs[0];
 };
 
-
-exports.getLastClubs = async (req, res) => {
-  let clubs = await Database.Read(
+exports.getLastClubs = async (_req, res) => {
+  const clubs = await Database.Read(
     DB_PATH,
     "SELECT * FROM clubs ORDER BY idClub DESC LIMIT 1 ;"
   );
   res.json(clubs);
 };
-
 
 exports.getClubById = async (clubId) => {
   const clubs = await Database.Read(
@@ -45,7 +49,7 @@ exports.getClubById = async (clubId) => {
 };
 
 exports.getNbrClubs = async (req, res) => {
-  let nbrClubs = await Database.Read(
+  const nbrClubs = await Database.Read(
     DB_PATH,
     "SELECT COUNT(idClub) FROM clubs;"
   );
@@ -53,8 +57,8 @@ exports.getNbrClubs = async (req, res) => {
 };
 
 // USERS
-exports.getAllUsers = async (req, res) => {
-  let users = await Database.Read(
+exports.getAllUsers = async (_req, res) => {
+  const users = await Database.Read(
     DB_PATH,
     "SELECT idUser,lastname,firstname,email,password,isAdmin FROM users;"
   );
@@ -62,20 +66,38 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.loginUsers = async (req, res) => {
-  const loginUser = req.body
-  let users = await Database.Read(
+  const loginUser = req.body;
+  const verifResult = Verif.ManageVerif([
+    { dataType: "email", data: loginUser.email },
+    { dataType: "password", data: loginUser.password },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
+    return;
+  }
+  const users = await Database.Read(
     DB_PATH,
     "SELECT idUser,lastname,firstname,email,password,isAdmin FROM users WHERE email=?;",
     loginUser.email
   );
-  if (users[0].password == hashFunc.hashPassword("sha256", "base64", loginUser.password)){
+  if (
+    users[0].password ==
+    hashFunc.hashPassword("sha256", "base64", loginUser.password)
+  ) {
     res.json(users);
-  }else{
+  } else {
     res.json({ status: false, error: "Password or email is false" });
   }
 };
 
 exports.getUserById = async (userId) => {
+  const verifResult = Verif.ManageVerif([
+    { dataType: "userExistId", data: userId },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
+    return;
+  }
   const users = await Database.Read(
     DB_PATH,
     "SELECT * FROM users WHERE idUser=?;",
@@ -84,10 +106,9 @@ exports.getUserById = async (userId) => {
   return users[0];
 };
 
-
 // MEMBERS CLUB
-exports.getNbrMembers = async (req, res) => {
-  let nbrMember = await Database.Read(
+exports.getNbrMembers = async (_req, res) => {
+  const nbrMember = await Database.Read(
     DB_PATH,
     "SELECT COUNT(DISTINCT idUser) FROM membersClubs;"
   );
@@ -95,7 +116,7 @@ exports.getNbrMembers = async (req, res) => {
 };
 
 //EVENTS
-exports.getEvents = async (req, res) => {
+exports.getEvents = async (_req, res) => {
   const events = await Database.Read(
     DB_PATH,
     "SELECT idEvent,idClub,name,description FROM events;"
@@ -103,14 +124,13 @@ exports.getEvents = async (req, res) => {
   res.json(events);
 };
 
-exports.get3LastEvents = async (req, res) => {
+exports.get3LastEvents = async (_req, res) => {
   const events = await Database.Read(
     DB_PATH,
     "SELECT * FROM events ORDER BY idEvent DESC LIMIT 3 ;"
   );
   res.json(events);
 };
-
 
 // ROLES
 exports.getOneRoleByName = async (roleName) => {
