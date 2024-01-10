@@ -1,10 +1,13 @@
 exports.VerifInput = (s) => {
+  // return true if the input is valide else false
   const banStrings = ["<", ">", "select", "update", "delete", "from"];
-  for (const banString in banStrings) {
+  banStrings.forEach((banString) => {
     if (s.includes(banString)) {
+      console.log(banString, "ban");
       return false;
     }
-  }
+  });
+  console.log("valid input");
   return true;
 };
 
@@ -13,7 +16,10 @@ exports.VerifEmail = (s) => {
 };
 
 exports.VerifName = (s, minLength = 3, maxLength = 25) => {
-  const regx = new RegExp(`^[\\w\\s]{${minLength},${maxLength}}$`);
+  //return true if the name is valid else false
+  // caract allowed : 'A-z' ' ' 'À-ú
+  // length allowed : minLength <= currentLength <= maxLength
+  const regx = new RegExp(`^[\\w\\sÀ-ú]{${minLength},${maxLength}}$`);
   return regx.test(s) && this.VerifInput(s);
 };
 
@@ -28,3 +34,8 @@ exports.VerifArray = (a) => {
   }
   return true;
 };
+
+// exports.VerifDate = (date) => {
+//   const dateMoment = moment(date, "DD/MM/YYYY");
+//   return !isNaN(new Date(dateArr[2], dateArr[1] - 1));
+// };

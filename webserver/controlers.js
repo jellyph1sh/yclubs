@@ -2,6 +2,7 @@ const Database = require("./Database.js");
 const crypto = require("crypto");
 const DB_PATH = "./clubs.db";
 const Verif = require("./verifInput.js");
+const moment = require("moment");
 
 //clubs
 exports.getClubs = async (req, res) => {
@@ -153,10 +154,7 @@ exports.addUser = async (req, res) => {
     res.json({ status: false, error: "invalidEmailFormat" });
     return;
   }
-  if (
-    !Verif.VerifName(user.firstname) ||
-    !Verif.VerifName(user.lastname)
-  ) {
+  if (!Verif.VerifName(user.firstname) || !Verif.VerifName(user.lastname)) {
     res.json({ status: false, error: "invalidName" });
     return;
   }
@@ -231,6 +229,19 @@ exports.addRole = async (req, res) => {
 
 exports.updateRoleMember = async (req, res) => {
   const role = req.body;
+  if (!Verif.VerifName(role.roleName)) {
+    res.json({ status: false, error: "invalidRoleName" });
+    return;
+  }
+  if (!Verif.VerifName(role.clubName)) {
+    res.json({ status: false, error: "invalidClubName" });
+    return;
+  }
+  if (isNaN(parseInt(role.userId))) {
+    //not a number
+    res.json({ status: false, error: "invalidUserId" });
+    return;
+  }
   const newRoleId = await Database.Read(
     DB_PATH,
     "SELECT roleId FROM roles WHERE name=?;",
@@ -266,15 +277,34 @@ exports.getEvents = async (req, res) => {
 };
 
 exports.addEvent = async (req, res) => {
-  const event = req.body;
+  const event = req.query;
+  if (!Verif.VerifName(event.name)) {
+    res.json({ status: false, error: "invalidEventName" });
+    return;
+  }
+  if (!Verif.VerifName(event.description)) {
+    res.json({ status: false, error: "invalidEventDescription" });
+    return;
+  }
+  if (isNaN(parseInt(event.idClub))) {
+    //not a number
+    res.json({ status: false, error: "invalidUserId" });
+    return;
+  }
+  // DD/MM/YYYY
+  const date = moment(event.date, "DD/MM/YYYY").toDate();
+  if (!Verif.VerifInput(event.date) || isNaN(date)) {
+    res.json({ status: false, error: "invalidDate" });
+    return;
+  }
   const err = await Database.Write(
     DB_PATH,
-    "INSERT INTO events(idClub,name,description) VALUES(?,?,?);",
-    event.idClub,
+    "INSERT INTO events(idClub,name,description,date) VALUES(?,?,?,?);",
+    parseInt(event.idClub),
     event.name,
-    event.description
+    event.description,
+    date
   );
-  console.log("test");
   if (err != null) {
     console.error(err);
     res.json({ status: false });
@@ -335,8 +365,8 @@ exports.getOneClubsByName = async (clubName) => {
     "SELECT * FROM clubs WHERE name=?;",
     clubName
   );
-  let club = clubs[0]
-  return(club);
+  let club = clubs[0];
+  return club;
 };
 
 exports.manageCapitalClub = async (req, res) => {
@@ -360,22 +390,21 @@ exports.manageCapitalClub = async (req, res) => {
   let CapitalCurrentClub = 0
   let CapitalGoalClub = 0
 
-  let currentClub = await this.getOneClubsByName(capitals.CurrentClubName)
-  let goalClub = await this.getOneClubsByName(capitals.GoalClubName)
+  let currentClub = await this.getOneClubsByName(capitals.CurrentClubName);
+  let goalClub = await this.getOneClubsByName(capitals.GoalClubName);
 
-  if (currentClub.idClub == goalClub.idClub){
-    CapitalCurrentClub = (currentClub.capital + capitals.price)
+  if (currentClub.idClub == goalClub.idClub) {
+    CapitalCurrentClub = currentClub.capital + capitals.price;
   } else {
     if (capitals.price<0){
       res.json({ status: false, error: "price < 0" });
       return;
     }
-    CapitalCurrentClub = (currentClub.capital - capitals.price)
-    CapitalGoalClub = (goalClub.capital + capitals.price)
+    CapitalCurrentClub = currentClub.capital - capitals.price;
+    CapitalGoalClub = goalClub.capital + capitals.price;
   }
-  
-  
-  if (CapitalCurrentClub >= 0 && CapitalGoalClub >= 0){
+
+  if (CapitalCurrentClub >= 0 && CapitalGoalClub >= 0) {
     //update current club
     const err = await Database.Write(
       DB_PATH,
@@ -388,7 +417,7 @@ exports.manageCapitalClub = async (req, res) => {
       res.json({ status: false });
       return;
     }
-    if (currentClub.idClub != goalClub.idClub){
+    if (currentClub.idClub != goalClub.idClub) {
       //update goal club
       const err2 = await Database.Write(
         DB_PATH,
@@ -408,4 +437,3 @@ exports.manageCapitalClub = async (req, res) => {
   }
   res.json({ status: true });
 };
-
