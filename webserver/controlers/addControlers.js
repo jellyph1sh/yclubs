@@ -1,6 +1,6 @@
 const Database = require("../Database.js");
 const crypto = require("crypto");
-const DB_PATH = "../clubs.db";
+const DB_PATH = "./clubs.db";
 const Verif = require("../verificationFunc/verifInput.js");
 const moment = require("moment");
 const hashFunc = require("../verificationFunc/password.js")
