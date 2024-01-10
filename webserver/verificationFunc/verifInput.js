@@ -1,3 +1,5 @@
+const stuffCtrlGet = require("../controlers/getControlers.js");
+
 VerifInput = (s) => {
   // return true if the input is valide else false
   const banStrings = ["<", ">", "select", "update", "delete", "from"];
@@ -28,9 +30,9 @@ VerifImage = (s) => {
   return /\.(jpg|jpeg|png|webp|avif|gif)$/.test(s);
 };
 
-VerifAlias = (a) => {
+VerifTags = (a) => {
   for (const v of a) {
-    if (!this.VerifName(v, 2, 4)) return false;
+    if (!this.VerifName(v, 3, 20)) return false;
   }
   return true;
 };
@@ -41,6 +43,20 @@ VerifAlias = (a) => {
 // };
 
 // ManageVerif return an empty string if all data are valid otherwise it return the error code of the first error that is catch
+//
+// Possible action :
+//    1) check if string data are valid
+//       (clubName,name,password,alias,description,tags)
+//
+//    2) check if some data are in right format
+//       (email,image,date)
+//
+//    3) check if number data are in right format
+//       (capital,id)
+//
+//    4) check if some data are consistent with the database
+//       (userExistId,clubExistId)
+
 exports.ManageVerif = (elementsToCheck) => {
   elementsToCheck.forEach((element) => {
     switch (element.dataType) {
@@ -48,11 +64,28 @@ exports.ManageVerif = (elementsToCheck) => {
         if (!VerifName(element.data, 3, 20)) return "invalidClubName";
         break;
       case "parentClubName":
-        if (!VerifName(element.data, 3, 20)) return "invalidParentClubName";
-
-      break;
+        if (
+          isNaN(stuffCtrlGet.getOneClubsByName(element.data)) ||
+          !VerifName(element.data, 3, 20)
+        )
+          return "invalidParentClubName";
+        break;
+      case "roleAssign":
+        if (
+          isNaN(stuffCtrlGet.getOneRoleByName(element.data)) ||
+          !VerifName(element.data, 3, 20)
+        )
+          return "invalidRoleName";
+        break;
       case "name":
         if (!VerifName(element.data, 3, 25)) return "invalidName";
+        break;
+      case "email":
+        if (!VerifEmail(element.data) || !Verif.VerifInput(element.data))
+          return "invalidEmail";
+        break;
+      case "password":
+        if (!Verif.VerifInput(element.data)) return "invalidInput";
         break;
       case "date":
         if (
@@ -65,14 +98,37 @@ exports.ManageVerif = (elementsToCheck) => {
         if (!VerifImage(element.data)) return "invalidImage";
         break;
       case "alias":
-        if (!VerifName(element.data)) return "invalidAlias";
+        if (!VerifName(element.data, 2, 4)) return "invalidAlias";
         break;
       case "description":
         if (!VerifName(element.data, 0, 255)) return "invalidDescription";
         break;
       case "tags":
-        if (!VerifAlias(element.data)) return "invalidTags";
+        if (!isNaN(element.data)) {
+          if (!VerifTags(element.data.split(" "))) return "invalidTags";
+        }
         break;
+      case "capital":
+        if (isNaN(parseInt(element.data))) return "invalidCapital";
+        break;
+      case "id":
+        if (isNaN(parseInt(element.data))) return "invalidId";
+        break;
+      case "userExistId":
+        if (
+          !isNaN(stuffCtrlGet.getUserById(element.data)) ||
+          isNaN(parseInt(element.data))
+        )
+          return "invalidUserId";
+        break;
+      case "clubExistId":
+        if (
+          !isNaN(stuffCtrlGet.getUserById(element.data)) ||
+          isNaN(parseInt(element.data))
+        )
+          return "invalidClubId";
+        break;
+
       default:
         return "invalidDataType";
     }
