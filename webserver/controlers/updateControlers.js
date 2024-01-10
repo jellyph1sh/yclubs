@@ -45,13 +45,13 @@ exports.updateRoleMember = async (req, res) => {
   }
   const newRoleId = await Database.Read(
     DB_PATH,
-    "SELECT roleId FROM roles WHERE name=?;",
+    "SELECT idRole FROM roles WHERE name=?;",
     data.roleName
   );
   const clubId = stuffCtrlGet.getOneClubByName(clubName);
   const err = await Database.Write(
     DB_PATH,
-    "UPDATE membersRoles SET idRole=? WHERE idUser = ? AND idClub = ?;",
+    "UPDATE membersClubs SET idRole=? WHERE idUser = ? AND idClub = ?;",
     newRoleId[0].idRole,
     data.userId,
     clubId[0].idClub

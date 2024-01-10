@@ -8,7 +8,7 @@ exports.deleteTagClub = async (req, res) => {
   const tag = req.body;
   err = await Database.Write(
     DB_PATH,
-    "DELETE FROM tags WHERE idClub=? AND idTag=?;",
+    "DELETE FROM clubsTags WHERE idClub=? AND idTag=?;",
     tag.idClub,
     tag.idTag
   );
