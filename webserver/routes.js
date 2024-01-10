@@ -17,7 +17,7 @@ router.post("/users/add", stuffCtrl.addUser);
 
 //clubMember
 router.post("/clubsMembers/add", stuffCtrl.addClubMember);
-router.post("/clubsMembers/update", stuffCtrl.updateClubMember);
+// router.post("/clubsMembers/update", stuffCtrl.updateClubMember);
 router.post("/clubsMembers/updateRoles", stuffCtrl.updateRoleMember);
 // router.delete('/clubsMembers/delete',stuffCtrl.deleteClubMember)
 
