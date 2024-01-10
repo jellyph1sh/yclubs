@@ -14,7 +14,7 @@ router.post("/clubs/update", stuffCtrlUpdate.updateClub);
 // router.delete('/clubs/delete',stuffCtrlDelete.Club)
 
 //users
-// router.get("/users/getall", stuffCtrlGet.getUsers);
+router.get("/users/getall", stuffCtrlGet.getUsers);
 // router.get("/users/get_one", stuffCtrlGet.getOneUsers);
 router.post("/users/add", stuffCtrlAdd.addUser);
 
@@ -30,7 +30,7 @@ router.post("/roles/add", stuffCtrlAdd.addRole);
 
 //tag
 router.post("/tags/addToClub", stuffCtrlAdd.addTagToClub);
-// router.delete('/tags/deleteToClubs',stuffCtrlDelete.deleteTagClub)
+router.delete('/tags/deleteToClubs',stuffCtrlDelete.deleteTagClub)
 
 
 //event

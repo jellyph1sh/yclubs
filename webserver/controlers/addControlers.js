@@ -17,10 +17,14 @@ exports.addClub = async (req, res) => {
     res.json({ status: false, error: "invalidDescription" });
     return;
   }
-  if (!Verif.VerifName(club.parentClubName)) {
-    res.json({ status: false, error: "invalidParentClubName" });
-    return;
+  
+  if(club.parentClubName != null){
+    if (!Verif.VerifName(club.parentClubName)) {
+      res.json({ status: false, error: "invalidParentClubName" });
+      return;
+    }
   }
+  
   if (!Verif.VerifName(club.alias, 2, 5)) {
     res.json({ status: false, error: "invalidAlias" });
     return;
@@ -35,11 +39,14 @@ exports.addClub = async (req, res) => {
     res.json({ status: false, error: "invalidImage" });
     return;
   }
-  if (!Verif.VerifArray(club.tags.split(" "))) {
-    // invalid tags
-    res.json({ status: false, error: "invalidTag" });
-    return;
+  if(club.tags != null){
+    if (!Verif.VerifArray(club.tags.split(" "))) {
+      // invalid tags
+      res.json({ status: false, error: "invalidTag" });
+      return;
+    }
   }
+  
   let parentClubId = null;
   if (club.parentClubName != "none") {
     parentClubId = await Database.Read(

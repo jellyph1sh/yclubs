@@ -13,9 +13,10 @@ exports.getClubs = async (req, res) => {
 };
 
 exports.getUsers = async (req, res) => {
+  console.log("test")
   let users = await Database.Read(
     DB_PATH,
-    "SELECT lastname,firstname,email,password,isAdmin FROM users;"
+    "SELECT idUser,lastname,firstname,email,password,isAdmin FROM users;"
   );
   res.json(users);
 };
