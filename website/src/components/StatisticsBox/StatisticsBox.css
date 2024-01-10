@@ -1,8 +1,53 @@
 .stats-box {
     position: absolute;
     top: 10vh;
-    left: 40vw;
-    width: 20vw;
-    height: 40vh;
+    left: 27vw;
+    width: 36.5vw;
+    height: 28vh;
     background-color: white;
+    border-radius: 20px;
+    color: #5C5C5C;
+}
+
+.stats-title {
+    margin-top: 1em;
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.stats-content {
+    margin-top: 3em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.stats-content h3 {
+    font-weight: normal;
+    font-size: 24px;
+}
+
+.stats-content span {
+    color: #23B2A4;
+    font-weight: bold;
+    font-size: 76px;
+    line-height: 0;
+}
+
+.stats-club, .stats-members {
+    display: flex;
+    flex-direction: column;
+}
+
+.stats-club-info, .stats-members-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.stats-club-icon, .stats-members-icon {
+    width: 76px;
+    height: 76px;
 }

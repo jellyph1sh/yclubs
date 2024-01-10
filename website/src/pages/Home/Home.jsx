@@ -1,5 +1,6 @@
 import NaviguationBar from "../../components/NaviguationBar/NaviguationBar";
 import StatisticsBox from "../../components/StatisticsBox/StatisticsBox";
+import LastClubBox from "../../components/LastClubBox/LastClubBox";
 import "./Home.css";
 
 function Home() {
@@ -7,6 +8,7 @@ function Home() {
     <>
       <NaviguationBar/>
       <StatisticsBox/>
+      <LastClubBox/>
     </>
   )
 };
