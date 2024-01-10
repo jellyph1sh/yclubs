@@ -29,12 +29,38 @@ exports.getEvents = async (req, res) => {
   res.json(events);
 };
 
-exports.getOneClubsByName = async (clubName) => {
-  let clubs = await Database.Read(
+exports.getOneClubByName = async (clubName) => {
+  const clubs = await Database.Read(
     DB_PATH,
     "SELECT * FROM clubs WHERE name=?;",
     clubName
   );
-  let club = clubs[0];
-  return club;
+  return clubs[0];
 };
+
+exports.getOneRoleByName = async (roleName) => {
+  const roles = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM roles WHERE name=?;",
+    roleName
+  );
+  return roles[0];
+};
+
+exports.getUserById = async (userId) => {
+  const users = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM users WHERE idUser=?;",
+    userId
+  );
+  return users[0];
+};
+
+exports.getClubById = async (clubId) => {
+    const clubs = await Database.Read(
+      DB_PATH,
+      "SELECT * FROM clubs WHERE idClub=?;",
+      clubId
+    );
+    return clubs[0];
+  };

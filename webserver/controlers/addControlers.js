@@ -3,50 +3,24 @@ const crypto = require("crypto");
 const DB_PATH = "./clubs.db";
 const Verif = require("../verificationFunc/verifInput.js");
 const moment = require("moment");
-const hashFunc = require("../verificationFunc/password.js")
+const hashFunc = require("../verificationFunc/password.js");
+const stuffCtrlGet = require("./getControlers.js");
 
 exports.addClub = async (req, res) => {
   const club = req.body;
-  if (!Verif.VerifName(club.name)) {
-    // invalid name or another club with this name should exist
-    res.json({ status: false, error: "invalidName" });
+  const verifResult = Verif.ManageVerif([
+    { dataType: "clubname", data: club.clubName },
+    { dataType: "description", data: club.description },
+    { dataType: "parentClubName", data: club.parentClubName },
+    { dataType: "alias", data: club.alias },
+    { dataType: "capital", data: club.capital },
+    { dataType: "image", data: club.image },
+    { dataType: "tags", data: club.tags },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
     return;
   }
-  if (!Verif.VerifName(club.description, 0, 255)) {
-    // invalid description length or invalid word are in description
-    res.json({ status: false, error: "invalidDescription" });
-    return;
-  }
-  
-  if(club.parentClubName != null){
-    if (!Verif.VerifName(club.parentClubName)) {
-      res.json({ status: false, error: "invalidParentClubName" });
-      return;
-    }
-  }
-  
-  if (!Verif.VerifName(club.alias, 2, 5)) {
-    res.json({ status: false, error: "invalidAlias" });
-    return;
-  }
-  if (isNaN(parseInt(club.capital))) {
-    //not a number
-    res.json({ status: false, error: "invalidCapital" });
-    return;
-  }
-  if (!Verif.VerifImage(club.image)) {
-    //not a valid image link
-    res.json({ status: false, error: "invalidImage" });
-    return;
-  }
-  if(club.tags != null){
-    if (!Verif.VerifArray(club.tags.split(" "))) {
-      // invalid tags
-      res.json({ status: false, error: "invalidTag" });
-      return;
-    }
-  }
-  
   let parentClubId = null;
   if (club.parentClubName != "none") {
     parentClubId = await Database.Read(
@@ -110,16 +84,14 @@ exports.addClub = async (req, res) => {
 
 exports.addUser = async (req, res) => {
   const user = req.body;
-  if (!Verif.VerifEmail(user.email) || !Verif.VerifInput(user.email)) {
-    res.json({ status: false, error: "invalidEmailFormat" });
-    return;
-  }
-  if (!Verif.VerifName(user.firstname) || !Verif.VerifName(user.lastname)) {
-    res.json({ status: false, error: "invalidName" });
-    return;
-  }
-  if (!Verif.VerifInput(user.password)) {
-    res.json({ status: false, error: "invalidPassword" });
+  const verifResult = Verif.ManageVerif([
+    { dataType: "email", data: user.email },
+    { dataType: "name", data: user.firstname },
+    { dataType: "name", data: user.lastname },
+    { dataType: "password", data: user.password },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
     return;
   }
   const password = hashFunc.hashPassword("sha256", "base64", user.password);
@@ -142,22 +114,32 @@ exports.addUser = async (req, res) => {
 };
 
 exports.addClubMember = async (req, res) => {
-  const data = req.body;
+  const club = req.body;
+  const verifResult = Verif.ManageVerif([
+    { dataType: "email", data: club.email },
+    { dataType: "parentClubName", data: club.clubName }, // the parent club is the member's new club
+    { dataType: "roleAssign", data: club.roleName },
+    { dataType: "userExistId", data: club.userId },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
+    return;
+  }
   const clubId = await Database.Read(
     DB_PATH,
     "SELECT idClub FROM clubs WHERE name=?;",
-    data.clubName
+    club.clubName
   );
   const roleId = await Database.Read(
     DB_PATH,
     "SELECT idRole FROM roles WHERE name=?;",
-    data.roleName
+    club.roleName
   );
   const err = await Database.Write(
     DB_PATH,
     "INSERT INTO membersClubs(idClub,idUser,idRole) VALUES(?,?,?);",
     clubId[0].idClub,
-    data.userId,
+    club.userId,
     roleId[0].idRole
   );
   if (err != null) {
@@ -170,6 +152,14 @@ exports.addClubMember = async (req, res) => {
 
 exports.addRole = async (req, res) => {
   const role = req.body;
+  const verifResult = Verif.ManageVerif([
+    { dataType: "name", data: role.name },
+    { dataType: "description", data: role.description },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
+    return;
+  }
   const err = await Database.Write(
     DB_PATH,
     "INSERT INTO roles(name,description) VALUES(?,?);",
@@ -187,25 +177,17 @@ exports.addRole = async (req, res) => {
 
 exports.addEvent = async (req, res) => {
   const event = req.query;
-  if (!Verif.VerifName(event.name)) {
-    res.json({ status: false, error: "invalidEventName" });
+  const verifResult = Verif.ManageVerif([
+    { dataType: "name", data: event.name },
+    { dataType: "description", data: event.description },
+    { dataType: "name", data: event.name },
+    { dataType: "date", data: event.date },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
     return;
   }
-  if (!Verif.VerifName(event.description)) {
-    res.json({ status: false, error: "invalidEventDescription" });
-    return;
-  }
-  if (isNaN(parseInt(event.idClub))) {
-    //not a number
-    res.json({ status: false, error: "invalidUserId" });
-    return;
-  }
-  // DD/MM/YYYY
   const date = moment(event.date, "DD/MM/YYYY").toDate();
-  if (!Verif.VerifInput(event.date) || isNaN(date)) {
-    res.json({ status: false, error: "invalidDate" });
-    return;
-  }
   const err = await Database.Write(
     DB_PATH,
     "INSERT INTO events(idClub,name,description,date) VALUES(?,?,?,?);",
@@ -224,24 +206,33 @@ exports.addEvent = async (req, res) => {
 
 exports.addTagToClub = async (req, res) => {
   const tag = req.body;
+  const verifResult = Verif.ManageVerif([
+    { dataType: "name", data: tag.name },
+    { dataType: "parentClubName", data: tag.clubName },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
+    return;
+  }
   err = await Database.Write(
     DB_PATH,
-    "INSERT INTO tags(name) VALUES(?);",
+    "INSERT INTO tags(name,description) VALUES(?);",
     tag.name
   );
   if (err != null) {
-    console.error(err);
+    console.log("A tag already exist in the database");
   }
-  const tagId = await Database.Read(
+  const tagToAdd = await Database.Read(
     DB_PATH,
     "SELECT idTag FROM tags WHERE name=?",
-    tag
+    tag.name
   );
+  const club = stuffCtrlGet.getOneClubByName(tag.clubName);
   err = await Database.Write(
     DB_PATH,
     "INSERT INTO clubsTags(idClub,idTag) VALUES(?,?);",
-    tag.clubId,
-    tagId[0].idTag
+    club[0].idClub,
+    tagToAdd[0].idTag
   );
   if (err != null) {
     console.error(err);
