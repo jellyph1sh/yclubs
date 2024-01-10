@@ -1,42 +1,45 @@
 const express = require("express");
 
 const router = express.Router();
-const stuffCtrl = require("./controlers.js");
+const stuffCtrlAdd = require("./controlers/addControlers.js");
+const stuffCtrlGet = require("./controlers/getControlers.js");
+const stuffCtrlUpdate = require("./controlers/updateControlers.js");
+const stuffCtrlDelete = require("./controlers/deleteControlers.js");
 
 //clubs
-router.get("/clubs/getall", stuffCtrl.getClubs);
-// router.get("/clubs/get_one", stuffCtrl.getOneClubs);
-router.post("/clubs/add", stuffCtrl.addClub);
-router.post("/clubs/update", stuffCtrl.updateClub);
-// router.delete('/clubs/delete',stuffCtrl.deleteClub)
+router.get("/clubs/getall", stuffCtrlGet.getClubs);
+// router.get("/clubs/get_one", stuffCtrlGet.getOneClubs);
+router.post("/clubs/add", stuffCtrlAdd.Club);
+router.post("/clubs/update", stuffCtrlUpdate.Club);
+// router.delete('/clubs/delete',stuffCtrlDelete.Club)
 
 //users
-// router.get("/users/getall", stuffCtrl.getUsers);
-// router.get("/users/get_one", stuffCtrl.getOneUsers);
-router.post("/users/add", stuffCtrl.addUser);
+// router.get("/users/getall", stuffCtrlGet.getUsers);
+// router.get("/users/get_one", stuffCtrlGet.getOneUsers);
+router.post("/users/add", stuffCtrlAdd.User);
 
 //clubMember
-router.post("/clubsMembers/add", stuffCtrl.addClubMember);
-// router.post("/clubsMembers/update", stuffCtrl.updateClubMember);
-router.post("/clubsMembers/updateRoles", stuffCtrl.updateRoleMember);
-// router.delete('/clubsMembers/delete',stuffCtrl.deleteClubMember)
+router.post("/clubsMembers/add", stuffCtrlAdd.ClubMember);
+// router.post("/clubsMembers/update", stuffCtrlUpdate.ClubMember);
+router.post("/clubsMembers/updateRoles", stuffCtrlUpdate.RoleMember);
+// router.delete('/clubsMembers/delete',stuffCtrlDelete.ClubMember)
 
 //roles
-router.post("/roles/add", stuffCtrl.addRole);
-// router.delete("/roles/delete", stuffCtrl.deleteRole);
+router.post("/roles/add", stuffCtrlAdd.Role);
+// router.delete("/roles/delete", stuffCtrlDelete.Role);
 
 //tag
-router.post("/tags/addToClub", stuffCtrl.addTagToClub);
-// router.delete('/tags/deleteToClubs',stuffCtrl.deleteTagToClub)
+router.post("/tags/addToClub", stuffCtrlAdd.TagToClub);
+// router.delete('/tags/deleteToClubs',stuffCtrlDelete.TagToClub)
 
 
 //event
-router.get("/events/getall", stuffCtrl.getEvents);
-router.post("/events/add", stuffCtrl.addEvent);
-// router.get("/events/getClub", stuffCtrl.getClubEvent);
+router.get("/events/getall", stuffCtrlGet.getEvents);
+router.post("/events/add", stuffCtrlAdd.Event);
+// router.get("/events/getClub", stuffCtrlGet.getClubEvent);
 // router.get("/events/getOne", stuffCtrl.getOneEvent);
 
-router.post("/capital", stuffCtrl.manageCapitalClub);
+router.post("/capital/update", stuffCtrlUpdate.CapitalClub);
 
 module.exports = router;
 
