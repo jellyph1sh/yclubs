@@ -9,37 +9,37 @@ const stuffCtrlDelete = require("./controlers/deleteControlers.js");
 //clubs
 router.get("/clubs/getall", stuffCtrlGet.getClubs);
 // router.get("/clubs/get_one", stuffCtrlGet.getOneClubs);
-router.post("/clubs/add", stuffCtrlAdd.Club);
-router.post("/clubs/update", stuffCtrlUpdate.Club);
+router.post("/clubs/add", stuffCtrlAdd.addClub);
+router.post("/clubs/update", stuffCtrlUpdate.updateClub);
 // router.delete('/clubs/delete',stuffCtrlDelete.Club)
 
 //users
 // router.get("/users/getall", stuffCtrlGet.getUsers);
 // router.get("/users/get_one", stuffCtrlGet.getOneUsers);
-router.post("/users/add", stuffCtrlAdd.User);
+router.post("/users/add", stuffCtrlAdd.addUser);
 
 //clubMember
-router.post("/clubsMembers/add", stuffCtrlAdd.ClubMember);
-// router.post("/clubsMembers/update", stuffCtrlUpdate.ClubMember);
-router.post("/clubsMembers/updateRoles", stuffCtrlUpdate.RoleMember);
+router.post("/clubsMembers/add", stuffCtrlAdd.addClubMember);
+// router.post("/clubsMembers/update", stuffCtrlUpdate.updateMember);
+router.post("/clubsMembers/updateRoles", stuffCtrlUpdate.updateRoleMember);
 // router.delete('/clubsMembers/delete',stuffCtrlDelete.ClubMember)
 
 //roles
-router.post("/roles/add", stuffCtrlAdd.Role);
+router.post("/roles/add", stuffCtrlAdd.addRole);
 // router.delete("/roles/delete", stuffCtrlDelete.Role);
 
 //tag
-router.post("/tags/addToClub", stuffCtrlAdd.TagToClub);
-// router.delete('/tags/deleteToClubs',stuffCtrlDelete.TagToClub)
+router.post("/tags/addToClub", stuffCtrlAdd.addTagToClub);
+// router.delete('/tags/deleteToClubs',stuffCtrlDelete.deleteTagClub)
 
 
 //event
 router.get("/events/getall", stuffCtrlGet.getEvents);
-router.post("/events/add", stuffCtrlAdd.Event);
+router.post("/events/add", stuffCtrlAdd.addEvent);
 // router.get("/events/getClub", stuffCtrlGet.getClubEvent);
 // router.get("/events/getOne", stuffCtrl.getOneEvent);
 
-router.post("/capital/update", stuffCtrlUpdate.CapitalClub);
+router.post("/capital/update", stuffCtrlUpdate.updateCapitalClub);
 
 module.exports = router;
 
