@@ -115,6 +115,25 @@ exports.getNbrMembers = async (_req, res) => {
   res.json(nbrMember);
 };
 
+exports.getMembersClub = async (req, res) => {
+  // TO DO : définir quelles données sont utiles lors de la récupération des utilisateurs
+  const data = req.body;
+  const verifResult = Verif.ManageVerif([
+    { dataType: "parentClubName", data: data.clubName },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
+    return;
+  }
+  const club = this.getOneClubByName(data.clubName);
+  const members = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM users JOIN membersClubs ON users.idUser = membersClubs.idUser WHERE idClub = ?;",
+    club
+  );
+  res.json(members);
+};
+
 //EVENTS
 exports.getEvents = async (_req, res) => {
   const events = await Database.Read(
