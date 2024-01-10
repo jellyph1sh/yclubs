@@ -1,100 +1,92 @@
 @media screen and (min-width:600px) {
-    .login-box {
+    .register-box {
         width: 47vw;
         height: 42vh;
     }
 
-    .login-left {
+    .register-left {
         width: 40%;
     }
 
-    .login-right {
+    .register-right {
         width: 45%;
     }
 
-    .login-logo {
+    .register-logo {
         width: 220px;
         height: 112px;
     }
 
-    .login-desc {
+    .register-desc {
         font-size: 16px;
     }
 
-    .login-register-button {
+    .register-login-button {
         font-size: 20px;
     }
 
-    .login-title {
+    .register-title {
         font-size: 24px;
     }
 
-    .login-inputs label {
+    .register-inputs label {
         font-size: 14px;
     }
 
-    .login-inputs input {
+    .register-inputs input {
         font-size: 18px;
     }
 
-    .login-button-login {
+    .register-button-register {
         font-size: 20px;
-    }
-
-    .login-forgot-password {
-        font-size: 14px;
     }
 }
 
 @media screen and (max-width:600px) {
-    .login-box {
+    .register-box {
         width: 80vw;
         height: 25vh;
     }
 
-    .login-left {
+    .register-left {
         width: 80%;
     }
 
-    .login-right {
+    .register-right {
         width: 90%;
     }
 
-    .login-logo {
+    .register-logo {
         width: 110px;
         height: 56px;
     }
 
-    .login-desc {
+    .register-desc {
         font-size: 8px;
     }
 
-    .login-register-button {
+    .register-login-button {
         font-size: 10px;
     }
 
-    .login-title {
+    .register-title {
         font-size: 12px;
     }
 
-    .login-inputs label {
+    .register-inputs label {
         font-size: 7px;
     }
 
-    .login-inputs input {
+    .register-inputs input {
         font-size: 9px;
     }
 
-    .login-button-login {
+    .register-button-register {
         font-size: 10px;
-    }
-
-    .login-forgot-password {
-        font-size: 7px;
     }
 }
 
-.login-box {
+.register-box {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -105,7 +97,7 @@
     padding: 0;
 }
 
-.login-left {
+.register-left {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -116,40 +108,40 @@
     overflow: hidden;
 }
 
-.login-left-header {
+.register-left-header {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.login-logo {
+.register-logo {
     margin: 2em;
 }
 
-.login-desc {
+.register-desc {
     margin: 0 1em;
     text-align: center;
 }
 
-.login-register-button {
-    padding: 0.5em 1.25em;
+.register-login-button {
+    padding: 0.5em 2.25em;
     margin-bottom: 2em;
     background-color: #23B2A4;
     border: 1px solid white;
     font-weight: bold;
 }
 
-.login-register-button:hover {
+.register-login-button:hover {
     background-color: white;
     color: #23B2A4;
     border: 1px solid white;
 }
 
-.login-register-button:focus {
+.register-login-button:focus {
     outline: none;
 }
 
-.login-right {
+.register-right {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -160,53 +152,74 @@
     overflow: hidden;
 }
 
-.login-title {
+.register-title {
     margin-top: 1.5em;
     color: #23B2A4;
     font-weight: bold;
     text-transform: uppercase;
 }
 
-.login-inputs {
+.register-inputs {
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
-.login-inputs input {
+.register-inputs input {
     padding: 0.5em 1em;
     background-color: white;
     border: 2px solid #9E9E9E;
     border-radius: 5px;
-    box-sizing: border-box;
+    width: 60%;
     color: black;
 }
 
-#login-email {
-    margin-bottom: 1em;
+.register-identity {
+    display: flex;
+    flex-direction: wrap;
+    margin-bottom: 0.5em;
 }
 
-.login-inputs input:focus {
+.register-identity-firstname {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register-identity-lastname {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register-identity input {
+    display: flex;
+    flex-direction: wrap;
+    width: 65%;
+}
+
+#register-email {
+    margin-bottom: 0.5em;
+}
+
+.register-inputs input:focus {
     border: 2px solid #23B2A4;
     outline: none;
 }
 
-.login-button-login {
-    padding: 0.5em 3em;
+.register-button-register {
+    padding: 0.5em 2em;
     background-color: #23B2A4;
     font-weight: bold;
+    margin-bottom: 2em;
 }
 
-.login-button-login:hover {
+.register-button-register:hover {
     background-color: white;
     color: #23B2A4;
     border: 1px solid #23B2A4;
 }
 
-.login-button-login:focus {
+.register-button-register:focus {
     outline: none;
-}
-
-.login-forgot-password {
-    color: #9E9E9E;
-    margin-bottom: 2em;
 }
