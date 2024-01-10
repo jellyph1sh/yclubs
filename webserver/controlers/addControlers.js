@@ -3,7 +3,7 @@ const crypto = require("crypto");
 const DB_PATH = "../clubs.db";
 const Verif = require("../verificationFunc/verifInput.js");
 const moment = require("moment");
-const hashFunc = require("../verificationFunc/password.js")
+const hashFunc = require("../verificationFunc/password.js");
 
 exports.addClub = async (req, res) => {
   const club = req.body;
@@ -136,16 +136,34 @@ exports.addUser = async (req, res) => {
 
 exports.addClubMember = async (req, res) => {
   const data = req.body;
+  if (!Verif.VerifName(data.clubName)) {
+    res.json({ status: false, error: "invalidClubName" });
+    return;
+  }
   const clubId = await Database.Read(
     DB_PATH,
     "SELECT idClub FROM clubs WHERE name=?;",
     data.clubName
   );
+  console.log(clubId, "club");
+  if (!Verif.VerifName(data.roleName)) {
+    res.json({ status: false, error: "invalidClubName" });
+    return;
+  }
   const roleId = await Database.Read(
     DB_PATH,
     "SELECT idRole FROM roles WHERE name=?;",
     data.roleName
   );
+  console.log(roleId, "role");
+
+  const user = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM users WHERE idUser = ?;",
+    data.userId
+  );
+
+  console.log(user, "user");
   const err = await Database.Write(
     DB_PATH,
     "INSERT INTO membersClubs(idClub,idUser,idRole) VALUES(?,?,?);",

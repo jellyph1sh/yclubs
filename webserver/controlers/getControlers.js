@@ -29,11 +29,10 @@ exports.getEvents = async (req, res) => {
 };
 
 exports.getOneClubsByName = async (clubName) => {
-  let clubs = await Database.Read(
+  const clubs = await Database.Read(
     DB_PATH,
     "SELECT * FROM clubs WHERE name=?;",
     clubName
   );
-  let club = clubs[0];
-  return club;
+  return clubs[0];
 };
