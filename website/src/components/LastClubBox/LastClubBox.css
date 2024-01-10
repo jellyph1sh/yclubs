@@ -1,3 +1,57 @@
+@media screen and (min-width:600px) {
+    .lc-title {
+        font-size: 28px;
+    }
+
+    .lc-club-logo {
+        width: 166px;
+        height: 166px;
+    }
+
+    .lc-club-title {
+        font-size: 24px;
+    }
+
+    .lc-club-alias {
+        font-size: 20px;
+    }
+
+    .lc-club-description {
+        font-size: 14px;
+    }
+
+    .lc-details {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width:600px) {
+    .lc-title {
+        font-size: 16px;
+    }
+
+    .lc-club-logo {
+        width: 83px;
+        height: 83px;
+    }
+
+    .lc-club-title {
+        font-size: 12px;
+    }
+
+    .lc-club-alias {
+        font-size: 10px;
+    }
+
+    .lc-club-description {
+        font-size: 7px;
+    }
+
+    .lc-details {
+        font-size: 6px;
+    }
+}
+
 .lc-box {
     position: absolute;
     top: 60vh;
@@ -9,12 +63,12 @@
     background-color: white;
     border-radius: 20px;
     color: #5C5C5C;
+    overflow: hidden;
 }
 
 .lc-title {
     margin-top: 1em;
     text-align: center;
-    font-size: 28px;
     font-weight: bold;
 }
 
@@ -22,11 +76,10 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    overflow: hidden;
 }
 
 .lc-club-logo {
-    width: 166px;
-    height: 166px;
     margin: 1em 2em;
 }
 
@@ -37,22 +90,18 @@
 
 .lc-club-title {
     font-weight: normal;
-    font-size: 24px;
 }
 
 .lc-club-alias {
     font-weight: normal;
-    font-size: 20px;
 }
 
 .lc-club-description {
     margin-top: 0.5em;
     font-weight: normal;
-    font-size: 14px;
 }
 
 .lc-details {
     text-align: center;
     color: #23B2A4;
-    font-size: 12px;
 }
