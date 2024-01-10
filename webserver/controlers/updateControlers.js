@@ -43,7 +43,7 @@ exports.updateClub = async (req, res) => {
     }
     const newRoleId = await Database.Read(
       DB_PATH,
-      "SELECT roleId FROM roles WHERE name=?;",
+      "SELECT idRole FROM roles WHERE name=?;",
       role.roleName
     );
     const clubId = await Database.Read(
@@ -53,7 +53,7 @@ exports.updateClub = async (req, res) => {
     );
     const err = await Database.Write(
       DB_PATH,
-      "UPDATE membersRoles SET idRole=? WHERE idUser = ? AND idClub = ?;",
+      "UPDATE membersClubs SET idRole=? WHERE idUser = ? AND idClub = ?;",
       newRoleId[0].idRole,
       role.userId,
       clubId[0].idClub
