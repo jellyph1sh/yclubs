@@ -1,0 +1,49 @@
+@media screen and (min-width:600px) {
+    .e-title {
+        font-size: 32px;
+    }
+}
+
+@media screen and (max-width:600px) {
+    .e-title {
+        font-size: 16px;
+    }
+}
+
+.e-box {
+    position: absolute;
+    top: 10vh;
+    left: 70vw;
+    width: 26vw;
+    height: 78vh;
+    background-color: white;
+    border-radius: 20px;
+    color: #5C5C5C;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+.e-title {
+    padding: 1em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.e-events {
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
+.e-events::-webkit-scrollbar {
+    display: none;
+  }
+
+.e-details {
+    color: #23B2A4;
+    text-align: center;
+    margin-top: 1em;
+}

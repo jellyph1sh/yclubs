@@ -1,0 +1,158 @@
+@media screen and (min-width:600px) {
+    .nav-title {
+      font-size: 28px;  
+    }
+
+    .nav-redirect-label {
+        font-size: 16px;
+    }
+
+    .nav-redirect-buttons a {
+        font-size: 20px;
+    }
+
+    .nav-redirect-buttons a {
+        font-size: 20px;
+    }
+
+    .b-createClub {
+        font-size: 20px;
+    }
+
+    .b-disconnect {
+        font-size: 20px;
+    }
+}
+
+@media screen and (max-width:600px) {
+    .nav-title {
+        font-size: 16px;
+    }
+
+    .nav-redirect-label {
+        font-size: 4px;
+    }
+
+    .nav-redirect-buttons a {
+        font-size: 8px;
+    }
+
+    .nav-redirect-buttons a {
+        font-size: 8px;
+    }
+
+    .b-createClub {
+        font-size: 6px;
+    }
+
+    .b-disconnect {
+        font-size: 6px;
+    }
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 20vw;
+    height: 100vh;
+    background-color: white;
+}
+
+.nav-header {
+    width: 20vw;
+    height: 15vh;
+    display: table-cell;
+    vertical-align: middle;
+    background-color: #23B2A4;
+}
+
+.nav-title {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+.nav-body {
+    height: calc(100vh - 15vh);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.nav-redirect {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5em;
+}
+
+.nav-redirect-label {
+    margin-left: 0.5em;
+    color: #5C5C5C;
+}
+
+.nav-redirect-buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-redirect-buttons a {
+    padding: 0.3em 0;
+    text-align: center;
+    text-decoration: none;
+    color: #23B2A4;
+    border-bottom: 1px solid #23B2A4;
+}
+
+.nav-redirect-buttons a:first-child {
+    border-top: 1px solid #23B2A4;
+}
+
+.nav-redirect-buttons a:hover {
+    background-color: #23B2A4;
+    color: white;
+}
+
+.nav-bottom-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 3em;
+}
+
+.nav-bottom-buttons button {
+    width: calc(100% - 25%);
+}
+
+.b-createClub {
+    padding: 0.45em;
+    border: 1px solid #23B2A4;
+    border-radius: 10px;
+    background-color: #23B2A4;
+    color: white;
+    font-weight: bold;
+}
+
+.b-createClub:hover {
+    color: #23B2A4;
+    background-color: white;
+    border: 1px solid #23B2A4;
+    border-radius: 10px;
+}
+
+.b-disconnect {
+    margin-top: 1em;
+    padding: 0.45em;
+    color: white;
+    background-color: #D1223E;
+    border: 1px solid #D1223E;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.b-disconnect:hover {
+    color: #D1223E;
+    background-color: white;
+    border: 1px solid #D1223E;
+    border-radius: 10px;
+}
