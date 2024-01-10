@@ -1,4 +1,4 @@
-exports.VerifInput = (s) => {
+VerifInput = (s) => {
   // return true if the input is valide else false
   const banStrings = ["<", ">", "select", "update", "delete", "from"];
   banStrings.forEach((banString) => {
@@ -11,11 +11,11 @@ exports.VerifInput = (s) => {
   return true;
 };
 
-exports.VerifEmail = (s) => {
+VerifEmail = (s) => {
   return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(s);
 };
 
-exports.VerifName = (s, minLength = 3, maxLength = 25) => {
+VerifName = (s, minLength = 3, maxLength = 25) => {
   //return true if the name is valid else false
   // caract allowed : 'A-z' ' ' 'À-ú
   // length allowed : minLength <= currentLength <= maxLength
@@ -23,19 +23,59 @@ exports.VerifName = (s, minLength = 3, maxLength = 25) => {
   return regx.test(s) && this.VerifInput(s);
 };
 
-exports.VerifImage = (s) => {
+VerifImage = (s) => {
   // const regx = new RegExp(`(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)`, "g");
   return /\.(jpg|jpeg|png|webp|avif|gif)$/.test(s);
 };
 
-exports.VerifArray = (a) => {
+VerifAlias = (a) => {
   for (const v of a) {
-    if (!this.VerifName(v, 3, 25)) return false;
+    if (!this.VerifName(v, 2, 4)) return false;
   }
   return true;
 };
 
-// exports.VerifDate = (date) => {
+// VerifDate = (date) => {
 //   const dateMoment = moment(date, "DD/MM/YYYY");
 //   return !isNaN(new Date(dateArr[2], dateArr[1] - 1));
 // };
+
+// ManageVerif return an empty string if all data are valid otherwise it return the error code of the first error that is catch
+exports.ManageVerif = (elementsToCheck) => {
+  elementsToCheck.forEach((element) => {
+    switch (element.dataType) {
+      case "clubName":
+        if (!VerifName(element.data, 3, 20)) return "invalidClubName";
+        break;
+      case "parentClubName":
+        if (!VerifName(element.data, 3, 20)) return "invalidParentClubName";
+
+      break;
+      case "name":
+        if (!VerifName(element.data, 3, 25)) return "invalidName";
+        break;
+      case "date":
+        if (
+          isNaN(moment(event.date, "DD/MM/YYYY").toDate()) ||
+          !Verif.VerifInput(event.date)
+        )
+          return "invalidDate";
+        break;
+      case "image":
+        if (!VerifImage(element.data)) return "invalidImage";
+        break;
+      case "alias":
+        if (!VerifName(element.data)) return "invalidAlias";
+        break;
+      case "description":
+        if (!VerifName(element.data, 0, 255)) return "invalidDescription";
+        break;
+      case "tags":
+        if (!VerifAlias(element.data)) return "invalidTags";
+        break;
+      default:
+        return "invalidDataType";
+    }
+  });
+  return "";
+};

@@ -7,39 +7,53 @@ const hashFunc = require("../verificationFunc/password.js");
 
 exports.addClub = async (req, res) => {
   const club = req.body;
-  if (!Verif.VerifName(club.name)) {
-    // invalid name or another club with this name should exist
-    res.json({ status: false, error: "invalidName" });
+  const verifResult = Verif.ManageVerif([
+    { dataType: "clubname", data: club.clubName },
+    { dataType: "description", data: club.description },
+    { dataType: "parentClubName", data: club.parentClubName },
+    { dataType: "clubname", data: club.clubName },
+    { dataType: "clubname", data: club.clubName },
+    { dataType: "clubname", data: club.clubName },
+    { dataType: "clubname", data: club.clubName },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
     return;
   }
-  if (!Verif.VerifName(club.description, 0, 255)) {
-    // invalid description length or invalid word are in description
-    res.json({ status: false, error: "invalidDescription" });
-    return;
-  }
-  if (!Verif.VerifName(club.parentClubName)) {
-    res.json({ status: false, error: "invalidParentClubName" });
-    return;
-  }
-  if (!Verif.VerifName(club.alias, 2, 5)) {
-    res.json({ status: false, error: "invalidAlias" });
-    return;
-  }
-  if (isNaN(parseInt(club.capital))) {
-    //not a number
-    res.json({ status: false, error: "invalidCapital" });
-    return;
-  }
-  if (!Verif.VerifImage(club.image)) {
-    //not a valid image link
-    res.json({ status: false, error: "invalidImage" });
-    return;
-  }
-  if (!Verif.VerifArray(club.tags.split(" "))) {
-    // invalid tags
-    res.json({ status: false, error: "invalidTag" });
-    return;
-  }
+
+  //   if (!Verif.VerifName(club.name)) {
+  //     // invalid name or another club with this name should exist
+  //     res.json({ status: false, error: "invalidName" });
+  //     return;
+  //   }
+  //   if (!Verif.VerifName(club.description, 0, 255)) {
+  //     // invalid description length or invalid word are in description
+  //     res.json({ status: false, error: "invalidDescription" });
+  //     return;
+  //   }
+  //   if (!Verif.VerifName(club.parentClubName)) {
+  //     res.json({ status: false, error: "invalidParentClubName" });
+  //     return;
+  //   }
+  //   if (!Verif.VerifName(club.alias, 2, 4)) {
+  //     res.json({ status: false, error: "invalidAlias" });
+  //     return;
+  //   }
+  //   if (isNaN(parseInt(club.capital))) {
+  //     //not a number
+  //     res.json({ status: false, error: "invalidCapital" });
+  //     return;
+  //   }
+  //   if (!Verif.VerifImage(club.image)) {
+  //     //not a valid image link
+  //     res.json({ status: false, error: "invalidImage" });
+  //     return;
+  //   }
+  //   if (!Verif.VerifArray(club.tags.split(" "))) {
+  //     // invalid tags
+  //     res.json({ status: false, error: "invalidTag" });
+  //     return;
+  //   }
   let parentClubId = null;
   if (club.parentClubName != "none") {
     parentClubId = await Database.Read(
