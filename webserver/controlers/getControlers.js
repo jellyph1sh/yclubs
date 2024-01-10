@@ -5,6 +5,8 @@ const Verif = require("../verificationFunc/verifInput.js");
 const moment = require("moment");
 const hashFunc = require("../verificationFunc/password.js")
 
+
+// CLUBS
 exports.getClubs = async (req, res) => {
   let clubs = await Database.Read(
     DB_PATH,
@@ -13,7 +15,7 @@ exports.getClubs = async (req, res) => {
   res.json(clubs);
 };
 
-exports.getOneClubsByName = async (clubName) => {
+exports.getOneClubByName = async (clubName) => {
   let clubs = await Database.Read(
     DB_PATH,
     "SELECT * FROM clubs WHERE name=?;",
@@ -32,6 +34,16 @@ exports.getLastClubs = async (req, res) => {
   res.json(clubs);
 };
 
+
+exports.getClubById = async (clubId) => {
+  const clubs = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM clubs WHERE idClub=?;",
+    clubId
+  );
+  return clubs[0];
+};
+
 exports.getNbrClubs = async (req, res) => {
   let nbrClubs = await Database.Read(
     DB_PATH,
@@ -40,6 +52,7 @@ exports.getNbrClubs = async (req, res) => {
   res.json(nbrClubs);
 };
 
+// USERS
 exports.getAllUsers = async (req, res) => {
   let users = await Database.Read(
     DB_PATH,
@@ -62,6 +75,17 @@ exports.loginUsers = async (req, res) => {
   }
 };
 
+exports.getUserById = async (userId) => {
+  const users = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM users WHERE idUser=?;",
+    userId
+  );
+  return users[0];
+};
+
+
+// MEMBERS CLUB
 exports.getNbrMembers = async (req, res) => {
   let nbrMember = await Database.Read(
     DB_PATH,
@@ -70,7 +94,7 @@ exports.getNbrMembers = async (req, res) => {
   res.json(nbrMember);
 };
 
-
+//EVENTS
 exports.getEvents = async (req, res) => {
   const events = await Database.Read(
     DB_PATH,
@@ -88,3 +112,12 @@ exports.get3LastEvents = async (req, res) => {
 };
 
 
+// ROLES
+exports.getOneRoleByName = async (roleName) => {
+  const roles = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM roles WHERE name=?;",
+    roleName
+  );
+  return roles[0];
+};
