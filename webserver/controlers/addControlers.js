@@ -151,30 +151,33 @@ exports.addClubMember = async (req, res) => {
     "SELECT idClub FROM clubs WHERE name=?;",
     club.clubName
   );
-  const userInClub = stuffCtrlGet.isUserInClub(club.userId, clubId);
-  if (userInClub != 0) {
-    res.json({ status: false, error: "userAlreadyInClub" });
-    return;
+  if (await stuffCtrlGet.getMemberRole(clubId,club.idUserConnected)=="directeur"){
+    const userInClub = stuffCtrlGet.isUserInClub(club.userId, clubId);
+    if (userInClub != 0) {
+      res.json({ status: false, error: "userAlreadyInClub" });
+      return;
+    }
+    const roleId = await Database.Read(
+      DB_PATH,
+      "SELECT idRole FROM roles WHERE name=?;",
+      club.roleName
+    );
+    const err = await Database.Write(
+      DB_PATH,
+      "INSERT INTO membersClubs(idClub,idUser,idRole) VALUES(?,?,?);",
+      clubId[0].idClub,
+      club.userId,
+      roleId[0].idRole
+    );
+    if (err != null) {
+      console.error(err);
+      res.json({ status: false });
+      return;
+    }
+    res.json({ status: true });
+  } else {
+    res.json({ status: true , error:"You don't have the permissions"});
   }
-  // 2
-  const roleId = await Database.Read(
-    DB_PATH,
-    "SELECT idRole FROM roles WHERE name=?;",
-    club.roleName
-  );
-  const err = await Database.Write(
-    DB_PATH,
-    "INSERT INTO membersClubs(idClub,idUser,idRole) VALUES(?,?,?);",
-    clubId[0].idClub,
-    club.userId,
-    roleId[0].idRole
-  );
-  if (err != null) {
-    console.error(err);
-    res.json({ status: false });
-    return;
-  }
-  res.json({ status: true });
 };
 
 exports.addRole = async (req, res) => {

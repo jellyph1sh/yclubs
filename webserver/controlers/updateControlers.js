@@ -14,20 +14,26 @@ exports.updateClub = async (req, res) => {
     res.json({ status: false, error: verifResult });
     return;
   }
+  
   const clubId = stuffCtrlGet.getOneClubByName(club.clubName);
-  const err = await Database.Write(
-    DB_PATH,
-    "UPDATE clubs SET name=?, description=? WHERE idClub=?;",
-    club.newName,
-    club.newDescription,
-    clubId[0].idClub
-  );
-  if (err != null) {
-    console.error(err);
+  if (await stuffCtrlGet.getMemberRole(clubId,club.idUser)=="directeur"){
+    const err = await Database.Write(
+      DB_PATH,
+      "UPDATE clubs SET name=?, description=? WHERE idClub=?;",
+      club.newName,
+      club.newDescription,
+      clubId[0].idClub
+    );
+    if (err != null) {
+      console.error(err);
+      res.json({ status: false });
+      return;
+    }
+    res.json({ status: true });
+    return
+  } else {
     res.json({ status: false });
-    return;
   }
-  res.json({ status: true });
 };
 
 exports.updateRoleMember = async (req, res) => {
@@ -41,25 +47,31 @@ exports.updateRoleMember = async (req, res) => {
     res.json({ status: false, error: verifResult });
     return;
   }
-  const newRoleId = await Database.Read(
-    DB_PATH,
-    "SELECT idRole FROM roles WHERE name=?;",
-    data.roleName
-  );
   const clubId = stuffCtrlGet.getOneClubByName(clubName);
-  const err = await Database.Write(
-    DB_PATH,
-    "UPDATE membersClubs SET idRole=? WHERE idUser = ? AND idClub = ?;",
-    newRoleId[0].idRole,
-    data.userId,
-    clubId[0].idClub
-  );
-  if (err != null) {
-    console.error(err);
-    res.json({ status: false });
+  if (await stuffCtrlGet.getMemberRole(clubId,data.userId)=="directeur"){
+    const newRoleId = await Database.Read(
+      DB_PATH,
+      "SELECT idRole FROM roles WHERE name=?;",
+      data.roleName
+    );
+    
+    const err = await Database.Write(
+      DB_PATH,
+      "UPDATE membersClubs SET idRole=? WHERE idUser = ? AND idClub = ?;",
+      newRoleId[0].idRole,
+      data.userId,
+      clubId[0].idClub
+    );
+    if (err != null) {
+      console.error(err);
+      res.json({ status: false });
+      return;
+    }
+    res.json({ status: true });
     return;
+  } else {
+    res.json({ status: false });
   }
-  res.json({ status: true });
 };
 
 exports.updateCapitalClub = async (req, res) => {
@@ -73,53 +85,64 @@ exports.updateCapitalClub = async (req, res) => {
     res.json({ status: false, error: verifResult });
     return;
   }
+
   let CapitalDonnorClub = 0;
   let CapitalReceivingClub = 0;
 
-  const currentClub = await this.getOneClubByName(capitals.receivingClubName);
-  const goalClub = await this.getOneClubByName(capitals.donnorClubName);
+  const donnorClub = await stuffCtrlGet.getOneClubByName(capitals.donnorClubName);
+  const receivingClub = await stuffCtrlGet.getOneClubByName(capitals.receivingClubName);
 
-  if (currentClub.idClub == goalClub.idClub) {
-    CapitalDonnorClub = currentClub.capital + capitals.price;
-  } else {
-    if (capitals.price < 0) {
-      res.json({ status: false, error: "price < 0" });
-      return;
-    }
-    CapitalDonnorClub = currentClub.capital - capitals.price;
-    CapitalReceivingClub = goalClub.capital + capitals.price;
-  }
+  if (await stuffCtrlGet.getMemberRole(donnorClub.idClub,capitals.userId)=="directeur" || await stuffCtrlGet.getMemberRole(donnorClub.idClub,capitals.userId)=="trésorier"){
+    if (donnorClub.idClub == receivingClub.idClub || donnorClub.idClubParent == undefined || donnorClub.idClubParent == receivingClub.idClub){
+      if (donnorClub.idClub == receivingClub.idClub) {
+        CapitalDonnorClub = donnorClub.capital + capitals.price;
+      } else {
+        if (capitals.price < 0) {
+          res.json({ status: false, error: "price < 0" });
+          return;
+        }
+        CapitalDonnorClub = donnorClub.capital - capitals.price;
+        CapitalReceivingClub = receivingClub.capital + capitals.price;
+      }
 
-  if (CapitalDonnorClub >= 0 && CapitalReceivingClub >= 0) {
-    //update donnor club
-    const err = await Database.Write(
-      DB_PATH,
-      "UPDATE clubs SET capital=? WHERE idClub=?;",
-      CapitalDonnorClub,
-      currentClub.idClub
-    );
-    if (err != null) {
-      console.error(err);
-      res.json({ status: false });
-      return;
-    }
-    if (currentClub.idClub != goalClub.idClub) {
-      //update receiving club
-      const err2 = await Database.Write(
-        DB_PATH,
-        "UPDATE clubs SET capital=? WHERE idClub=?;",
-        CapitalReceivingClub,
-        goalClub.idClub
-      );
-      if (err2 != null) {
-        console.error(err2);
-        res.json({ status: false });
+      if (CapitalDonnorClub >= 0 && CapitalReceivingClub >= 0) {
+        //update donnor club
+        const err = await Database.Write(
+          DB_PATH,
+          "UPDATE clubs SET capital=? WHERE idClub=?;",
+          CapitalDonnorClub,
+          donnorClub.idClub
+        );
+        if (err != null) {
+          console.error(err);
+          res.json({ status: false });
+          return;
+        }
+        if (donnorClub.idClub != receivingClub.idClub) {
+          //update receiving club
+          const err2 = await Database.Write(
+            DB_PATH,
+            "UPDATE clubs SET capital=? WHERE idClub=?;",
+            CapitalReceivingClub,
+            receivingClub.idClub
+          );
+          if (err2 != null) {
+            console.error(err2);
+            res.json({ status: false });
+            return;
+          }
+        }
+      } else {
+        res.json({ status: false, error: "price < 0" });
         return;
       }
+      res.json({ status: true });
+      return
+    }else{
+      res.json({ status: false , error:"You can't modify the capital of this club"});
+      return
     }
-  } else {
-    res.json({ status: false, error: "price < 0" });
-    return;
   }
-  res.json({ status: true });
+  res.json({ status: false , error:"You don't have the permissions"});
+  return
 };
