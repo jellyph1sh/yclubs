@@ -1,17 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import "./LastClubBox.css"
 
 const LastClubBox = () => {
     const [lastClub, setLastClub] = useState([]);
 
-    axios.get("http://localhost:3001/api/clubs/getLast")
+
+    useEffect(() => {
+        axios.get("http://localhost:3001/api/clubs/getLast")
         .then((response) => {
             setLastClub(response.data["club"]);
         })
         .catch(function (error) {
             console.log(error);
         })
+    });
 
     return (
         <div className="lc-box">

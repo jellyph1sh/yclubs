@@ -46,6 +46,8 @@
 
 .en-box {
     margin-top: 1em;
+    width: 100%;
+    height: 30%;
     display: flex;
     flex-direction: column;
     background-color: #23B2A4;
@@ -69,8 +71,13 @@
 }
 
 .en-desc {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: 1em;
+    height: 40%;
     text-align: center;
+
 }
 
 .en-details {

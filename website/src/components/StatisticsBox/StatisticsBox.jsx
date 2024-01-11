@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import "./StatisticsBox.css"
 
@@ -6,7 +6,8 @@ const StatisticsBox = () => {
     const [clubNb, setClubNb] = useState(0);
     const [membersNbr, setMembersNbr] = useState(0);
 
-    axios.get("http://localhost:3001/api/clubs/getNbrClub")
+    useEffect(() => {
+        axios.get("http://localhost:3001/api/clubs/getNbrClub")
         .then((response) => {
             setClubNb(response.data["nbrClubs"]);
         })
@@ -21,6 +22,7 @@ const StatisticsBox = () => {
         .catch(function (error) {
             console.log(error);
         })
+    });
 
     return (
         <div className="stats-box">
