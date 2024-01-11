@@ -10,7 +10,7 @@ exports.getClubs = async (_req, res) => {
     DB_PATH,
     "SELECT idClub,idClubParent,name,description,capital FROM clubs;"
   );
-  res.json({clubs: clubs});
+  res.json({ clubs: clubs });
 };
 
 exports.getOneClubByName = async (clubName) => {
@@ -32,7 +32,7 @@ exports.getOneClubByName = async (clubName) => {
 };
 
 exports.getLastClubs = async (req, res) => {
-  if (!tokenFunc.verifToken(req)) {
+  if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
@@ -40,7 +40,7 @@ exports.getLastClubs = async (req, res) => {
     DB_PATH,
     "SELECT * FROM clubs ORDER BY idClub DESC LIMIT 1 ;"
   );
-  res.json({club: clubs[0]});
+  res.json({ club: clubs[0] });
 };
 
 exports.getClubById = async (clubId) => {
@@ -57,7 +57,7 @@ exports.getNbrClubs = async (_req, res) => {
     DB_PATH,
     "SELECT COUNT(idClub) AS nbrClubs FROM clubs;"
   );
-  res.json({nbrClubs: nbrClubs[0].nbrClubs});
+  res.json({ nbrClubs: nbrClubs[0].nbrClubs });
 };
 
 // USERS
@@ -69,7 +69,7 @@ exports.getAllUsers = async (req, res) => {
     DB_PATH,
     "SELECT idUser,lastname,firstname,email,password,isAdmin FROM users;"
   );
-  res.json({allUsers: users});
+  res.json({ allUsers: users });
 };
 
 exports.loginUsers = async (req, res) => {
@@ -92,7 +92,7 @@ exports.loginUsers = async (req, res) => {
       users[0].password ==
       hashFunc.hashPassword("sha256", "base64", loginUser.password)
     ) {
-      const token = tokenFunc.createToken(users.userId, loginUser.email);
+      const token = tokenFunc.createToken(users[0].idUser , loginUser.email);
       res.json({ isLogin: true, user: JSON.stringify(users[0]), token: token });
       return;
     } else {
@@ -125,7 +125,7 @@ exports.getNbrMembers = async (_req, res) => {
     DB_PATH,
     "SELECT COUNT(DISTINCT idUser) AS nbrMember FROM membersClubs;"
   );
-  res.json({nbrMember: nbrMember[0].nbrMember});
+  res.json({ nbrMember: nbrMember[0].nbrMember });
 };
 
 exports.getMembersClub = async (req, res) => {
@@ -141,7 +141,7 @@ exports.getMembersClub = async (req, res) => {
     "SELECT * FROM users JOIN membersClubs ON users.idUser = membersClubs.idUser WHERE idClub = ?;",
     club.idClub
   );
-  res.json({members:members});
+  res.json({ members: members });
 };
 
 exports.getMemberRole = async (idClub, idUser) => {
@@ -174,7 +174,7 @@ exports.getEvents = async (_req, res) => {
     DB_PATH,
     "SELECT idEvent,idClub,name,description FROM events;"
   );
-  res.json({events: events});
+  res.json({ events: events });
 };
 
 exports.getThreeLastEvents = async (_req, res) => {
@@ -182,7 +182,7 @@ exports.getThreeLastEvents = async (_req, res) => {
     DB_PATH,
     "SELECT events.name AS name, events.description AS description, clubs.alias AS alias FROM events JOIN clubs ON events.idClub = clubs.idClub ORDER BY idEvent DESC LIMIT 3 ;"
   );
-  res.json({events: JSON.stringify(events)});
+  res.json({ events: JSON.stringify(events) });
 };
 
 // ROLES

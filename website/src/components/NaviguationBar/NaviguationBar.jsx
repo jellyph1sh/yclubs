@@ -21,7 +21,7 @@ const NaviguationBar = () => {
                 </div>
                 <div className="nav-bottom-buttons">
                     <button className="b-createClub">Créer son club</button>
-                    <button className="b-disconnect" onClick={() => {removeCookie("user")}}>Déconnexion</button>
+                    <button className="b-disconnect" onClick={() => {removeCookie("user");removeCookie("token")}}>Déconnexion</button>
                 </div>
             </div>
         </div>
