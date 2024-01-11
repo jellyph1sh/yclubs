@@ -93,7 +93,7 @@ exports.updateCapitalClub = async (req, res) => {
   }
 
   if (CapitalDonnorClub >= 0 && CapitalReceivingClub >= 0) {
-    //update current club
+    //update donnor club
     const err = await Database.Write(
       DB_PATH,
       "UPDATE clubs SET capital=? WHERE idClub=?;",
@@ -106,7 +106,7 @@ exports.updateCapitalClub = async (req, res) => {
       return;
     }
     if (currentClub.idClub != goalClub.idClub) {
-      //update goal club
+      //update receiving club
       const err2 = await Database.Write(
         DB_PATH,
         "UPDATE clubs SET capital=? WHERE idClub=?;",
