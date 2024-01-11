@@ -151,8 +151,8 @@ exports.isUserInClub = async (userId, clubId) => {
   const nbrMember = await Database.Read(
     DB_PATH,
     "SELECT COUNT(DISTINCT idUser) FROM membersClubs WHERE idUser = ? AND idClub = ?;",
-    data.userId,
-    data.clubId
+    userId,
+    clubId
   );
   console.log(nbrMember)
   res.json(nbrMember);
