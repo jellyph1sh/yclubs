@@ -17,7 +17,7 @@ router.post("/clubs/update", stuffCtrlUpdate.updateClub);
 
 // USERS
 router.get("/users/getall", stuffCtrlGet.getAllUsers);
-router.get("/users/login", stuffCtrlGet.loginUsers);
+router.post("/users/login", stuffCtrlGet.loginUsers);
 router.post("/users/add", stuffCtrlAdd.addUser);
 
 // CLUB MEMBERS
