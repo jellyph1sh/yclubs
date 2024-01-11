@@ -1,14 +1,11 @@
 const Database = require("../Database.js");
-const crypto = require("crypto");
 const DB_PATH = "./clubs.db";
 const Verif = require("../verificationFunc/verifInput.js");
-const moment = require("moment");
 const hashFunc = require("../verificationFunc/password.js");
-const stuffCtrlGet = require("./getControlers.js");
 
 // CLUBS
-exports.getClubs = async (req, res) => {
-  let clubs = await Database.Read(
+exports.getClubs = async (_req, res) => {
+  const clubs = await Database.Read(
     DB_PATH,
     "SELECT idClub,idClubParent,name,description,capital FROM clubs;"
   );
@@ -20,14 +17,16 @@ exports.getOneClubByName = async (clubName) => {
     { dataType: "clubName", data: clubName },
   ]);
   if (verifResult != "") {
-    res.json({ status: false, error: verifResult });
-    return;
+    return "invalidClubName";
   }
   const clubs = await Database.Read(
     DB_PATH,
     "SELECT * FROM clubs WHERE name=?;",
     clubName
   );
+  if (clubs.length == 0) {
+    return "unknownClubName";
+  }
   return clubs[0];
 };
 
@@ -48,7 +47,7 @@ exports.getClubById = async (clubId) => {
   return clubs[0];
 };
 
-exports.getNbrClubs = async (req, res) => {
+exports.getNbrClubs = async (_req, res) => {
   const nbrClubs = await Database.Read(
     DB_PATH,
     "SELECT COUNT(idClub) FROM clubs;"
@@ -118,17 +117,45 @@ exports.getNbrMembers = async (_req, res) => {
   res.json(nbrMember);
 };
 
-exports.getMemberRole = async (idClub,idUser) => {
+exports.getMembersClub = async (req, res) => {
+  // TO DO : définir quelles données sont utiles lors de la récupération des utilisateurs
+  const data = req.body;
+  const club = await this.getOneClubByName(data.clubName);
+  if (club == "invalidClubName" || club == "unknownClubName") {
+    res.json({ status: false, error: club });
+    return;
+  }
+  const members = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM users JOIN membersClubs ON users.idUser = membersClubs.idUser WHERE idClub = ?;",
+    club.idClub
+  );
+  res.json(members);
+};
+
+exports.getMemberRole = async (idClub, idUser) => {
   const memberRole = await Database.Read(
     DB_PATH,
     "SELECT roles.name FROM membersClubs INNER JOIN roles on roles.idRole = membersClubs.idRole WHERE membersClubs.idClub=? AND membersClubs.idUser=?;",
     idClub,
-    idUser,
+    idUser
   );
   if (memberRole.length != 0){
-    return(memberRole[0].name);
+    return memberRole[0].name;
   }
   return("");
+};
+
+exports.isUserInClub = async (userId, clubId) => {
+  const nbrMember = await Database.Read(
+    DB_PATH,
+    "SELECT COUNT(DISTINCT idUser) FROM membersClubs WHERE idUser = ? AND idClub = ?;",
+    userId,
+    clubId
+  );
+  console.log(nbrMember)
+  res.json(nbrMember);
+
 };
 
 //EVENTS
