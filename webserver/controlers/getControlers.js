@@ -64,6 +64,7 @@ exports.getNbrClubs = async (_req, res) => {
 exports.getAllUsers = async (req, res) => {
   if (!tokenFunc.verifToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
+    return;
   }
   const users = await Database.Read(
     DB_PATH,
@@ -92,7 +93,7 @@ exports.loginUsers = async (req, res) => {
       users[0].password ==
       hashFunc.hashPassword("sha256", "base64", loginUser.password)
     ) {
-      const token = tokenFunc.createToken(users[0].idUser , loginUser.email);
+      const token = tokenFunc.createToken(users[0].idUser, loginUser.email);
       res.json({ isLogin: true, user: JSON.stringify(users[0]), token: token });
       return;
     } else {

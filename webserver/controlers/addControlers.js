@@ -13,6 +13,10 @@ const stuffCtrlGet = require("./getControlers.js");
 //
 // 3) Adding tags and link them with the newly created club
 exports.addClub = async (req, res) => {
+  if (!tokenFunc.verifToken(req)) {
+    res.json({ status: false, error: "inexistantToken" });
+    return;
+  }
   const club = req.body;
   // 1)
   const verifResult = Verif.ManageVerif([
@@ -134,6 +138,10 @@ exports.addUser = async (req, res) => {
 //
 // 2) Adding a new member to a club with a role
 exports.addClubMember = async (req, res) => {
+  if (!tokenFunc.verifToken(req)) {
+    res.json({ status: false, error: "inexistantToken" });
+    return;
+  }
   const club = req.body;
   // 1)
   const verifResult = Verif.ManageVerif([
@@ -151,7 +159,10 @@ exports.addClubMember = async (req, res) => {
     "SELECT idClub FROM clubs WHERE name=?;",
     club.clubName
   );
-  if (await stuffCtrlGet.getMemberRole(clubId,club.idUserConnected)=="directeur"){
+  if (
+    (await stuffCtrlGet.getMemberRole(clubId, club.idUserConnected)) ==
+    "directeur"
+  ) {
     const userInClub = stuffCtrlGet.isUserInClub(club.userId, clubId);
     if (userInClub != 0) {
       res.json({ status: false, error: "userAlreadyInClub" });
@@ -176,11 +187,15 @@ exports.addClubMember = async (req, res) => {
     }
     res.json({ status: true });
   } else {
-    res.json({ status: true , error:"You don't have the permissions"});
+    res.json({ status: true, error: "You don't have the permissions" });
   }
 };
 
 exports.addRole = async (req, res) => {
+  if (!tokenFunc.verifToken(req)) {
+    res.json({ status: false, error: "inexistantToken" });
+    return;
+  }
   const role = req.body;
   const verifResult = Verif.ManageVerif([
     { dataType: "name", data: role.name },
@@ -206,6 +221,10 @@ exports.addRole = async (req, res) => {
 };
 
 exports.addEvent = async (req, res) => {
+  if (!tokenFunc.verifToken(req)) {
+    res.json({ status: false, error: "inexistantToken" });
+    return;
+  }
   const event = req.body;
   const verifResult = Verif.ManageVerif([
     { dataType: "name", data: event.name },
@@ -235,6 +254,10 @@ exports.addEvent = async (req, res) => {
 };
 
 exports.addTagToClub = async (req, res) => {
+  if (!tokenFunc.verifToken(req)) {
+    res.json({ status: false, error: "inexistantToken" });
+    return;
+  }
   const tag = req.body;
   const verifResult = Verif.ManageVerif([
     { dataType: "name", data: tag.name },

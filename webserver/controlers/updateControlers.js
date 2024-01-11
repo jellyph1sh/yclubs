@@ -4,6 +4,10 @@ const Verif = require("../verificationFunc/verifInput.js");
 const stuffCtrlGet = require("./getControlers.js");
 
 exports.updateClub = async (req, res) => {
+  if (!tokenFunc.verifToken(req)) {
+    res.json({ status: false, error: "inexistantToken" });
+    return;
+  }
   const club = req.body;
   const verifResult = Verif.ManageVerif([
     { dataType: "clubname", data: club.newName },
@@ -14,9 +18,9 @@ exports.updateClub = async (req, res) => {
     res.json({ status: false, error: verifResult });
     return;
   }
-  
+
   const clubId = stuffCtrlGet.getOneClubByName(club.clubName);
-  if (await stuffCtrlGet.getMemberRole(clubId,club.idUser)=="directeur"){
+  if ((await stuffCtrlGet.getMemberRole(clubId, club.idUser)) == "directeur") {
     const err = await Database.Write(
       DB_PATH,
       "UPDATE clubs SET name=?, description=? WHERE idClub=?;",
@@ -30,13 +34,17 @@ exports.updateClub = async (req, res) => {
       return;
     }
     res.json({ status: true });
-    return
+    return;
   } else {
     res.json({ status: false });
   }
 };
 
 exports.updateRoleMember = async (req, res) => {
+  if (!tokenFunc.verifToken(req)) {
+    res.json({ status: false, error: "inexistantToken" });
+    return;
+  }
   const data = req.body;
   const verifResult = Verif.ManageVerif([
     { dataType: "name", data: data.roleName },
@@ -48,13 +56,13 @@ exports.updateRoleMember = async (req, res) => {
     return;
   }
   const clubId = stuffCtrlGet.getOneClubByName(clubName);
-  if (await stuffCtrlGet.getMemberRole(clubId,data.userId)=="directeur"){
+  if ((await stuffCtrlGet.getMemberRole(clubId, data.userId)) == "directeur") {
     const newRoleId = await Database.Read(
       DB_PATH,
       "SELECT idRole FROM roles WHERE name=?;",
       data.roleName
     );
-    
+
     const err = await Database.Write(
       DB_PATH,
       "UPDATE membersClubs SET idRole=? WHERE idUser = ? AND idClub = ?;",
@@ -75,6 +83,10 @@ exports.updateRoleMember = async (req, res) => {
 };
 
 exports.updateCapitalClub = async (req, res) => {
+  if (!tokenFunc.verifToken(req)) {
+    res.json({ status: false, error: "inexistantToken" });
+    return;
+  }
   const capitals = req.body;
   const verifResult = Verif.ManageVerif([
     { dataType: "parentClubName", data: capitals.receivingClubName },
@@ -89,11 +101,24 @@ exports.updateCapitalClub = async (req, res) => {
   let CapitalDonnorClub = 0;
   let CapitalReceivingClub = 0;
 
-  const donnorClub = await stuffCtrlGet.getOneClubByName(capitals.donnorClubName);
-  const receivingClub = await stuffCtrlGet.getOneClubByName(capitals.receivingClubName);
+  const donnorClub = await stuffCtrlGet.getOneClubByName(
+    capitals.donnorClubName
+  );
+  const receivingClub = await stuffCtrlGet.getOneClubByName(
+    capitals.receivingClubName
+  );
 
-  if (await stuffCtrlGet.getMemberRole(donnorClub.idClub,capitals.userId)=="directeur" || await stuffCtrlGet.getMemberRole(donnorClub.idClub,capitals.userId)=="trésorier"){
-    if (donnorClub.idClub == receivingClub.idClub || donnorClub.idClubParent == undefined || donnorClub.idClubParent == receivingClub.idClub){
+  if (
+    (await stuffCtrlGet.getMemberRole(donnorClub.idClub, capitals.userId)) ==
+      "directeur" ||
+    (await stuffCtrlGet.getMemberRole(donnorClub.idClub, capitals.userId)) ==
+      "trésorier"
+  ) {
+    if (
+      donnorClub.idClub == receivingClub.idClub ||
+      donnorClub.idClubParent == undefined ||
+      donnorClub.idClubParent == receivingClub.idClub
+    ) {
       if (donnorClub.idClub == receivingClub.idClub) {
         CapitalDonnorClub = donnorClub.capital + capitals.price;
       } else {
@@ -137,12 +162,15 @@ exports.updateCapitalClub = async (req, res) => {
         return;
       }
       res.json({ status: true });
-      return
-    }else{
-      res.json({ status: false , error:"You can't modify the capital of this club"});
-      return
+      return;
+    } else {
+      res.json({
+        status: false,
+        error: "You can't modify the capital of this club",
+      });
+      return;
     }
   }
-  res.json({ status: false , error:"You don't have the permissions"});
-  return
+  res.json({ status: false, error: "You don't have the permissions" });
+  return;
 };
