@@ -2,6 +2,7 @@ const Database = require("../Database.js");
 const DB_PATH = "./clubs.db";
 const Verif = require("../verificationFunc/verifInput.js");
 const hashFunc = require("../verificationFunc/password.js");
+const jwt = require("jsonwebtoken");
 
 // CLUBS
 exports.getClubs = async (_req, res) => {
@@ -9,7 +10,7 @@ exports.getClubs = async (_req, res) => {
     DB_PATH,
     "SELECT idClub,idClubParent,name,description,capital FROM clubs;"
   );
-  res.json(clubs);
+  res.json({clubs: clubs});
 };
 
 exports.getOneClubByName = async (clubName) => {
@@ -35,7 +36,7 @@ exports.getLastClubs = async (_req, res) => {
     DB_PATH,
     "SELECT * FROM clubs ORDER BY idClub DESC LIMIT 1 ;"
   );
-  res.json(clubs);
+  res.json({club: clubs[0]});
 };
 
 exports.getClubById = async (clubId) => {
@@ -50,9 +51,9 @@ exports.getClubById = async (clubId) => {
 exports.getNbrClubs = async (_req, res) => {
   const nbrClubs = await Database.Read(
     DB_PATH,
-    "SELECT COUNT(idClub) FROM clubs;"
+    "SELECT COUNT(idClub) AS nbrClubs FROM clubs;"
   );
-  res.json(nbrClubs);
+  res.json({nbrClubs: nbrClubs[0].nbrClubs});
 };
 
 // USERS
@@ -61,7 +62,7 @@ exports.getAllUsers = async (_req, res) => {
     DB_PATH,
     "SELECT idUser,lastname,firstname,email,password,isAdmin FROM users;"
   );
-  res.json(users);
+  res.json({allUsers: users});
 };
 
 exports.loginUsers = async (req, res) => {
@@ -79,11 +80,30 @@ exports.loginUsers = async (req, res) => {
     "SELECT idUser,lastname,firstname,email,password,isAdmin FROM users WHERE email=?;",
     loginUser.email
   );
+  if (users.length!= 0){
+    if (users[0].password == hashFunc.hashPassword("sha256", "base64", loginUser.password)
+    ) {
+      res.json({isLogin: true, user : JSON.stringify(users[0])});
+      return
+    } else {
+      res.json({error: "Password is false", isLogin: false });
+      return
+    }
+  }
+  res.json({error: "email is false", isLogin: false });
   if (
     users[0].password ==
     hashFunc.hashPassword("sha256", "base64", loginUser.password)
   ) {
-    res.json({ isLogin: true, users });
+    const token = jwt.sign(
+      {
+        id: users[0].id,
+        username: users[0].email,
+      },
+      process.env.SECRET_TOKEN,
+      { expiresIn: "6 hours" }
+    );
+    res.json({ isLogin: true, user: users, access_token: token });
   } else {
     res.json({
       status: false,
@@ -113,9 +133,9 @@ exports.getUserById = async (userId) => {
 exports.getNbrMembers = async (_req, res) => {
   const nbrMember = await Database.Read(
     DB_PATH,
-    "SELECT COUNT(DISTINCT idUser) FROM membersClubs;"
+    "SELECT COUNT(DISTINCT idUser) AS nbrMember FROM membersClubs;"
   );
-  res.json(nbrMember);
+  res.json({nbrMember: nbrMember[0].nbrMember});
 };
 
 exports.getMembersClub = async (req, res) => {
@@ -131,7 +151,7 @@ exports.getMembersClub = async (req, res) => {
     "SELECT * FROM users JOIN membersClubs ON users.idUser = membersClubs.idUser WHERE idClub = ?;",
     club.idClub
   );
-  res.json(members);
+  res.json({members:members});
 };
 
 exports.getMemberRole = async (idClub, idUser) => {
@@ -141,7 +161,10 @@ exports.getMemberRole = async (idClub, idUser) => {
     idClub,
     idUser
   );
-  return memberRole[0].name;
+  if (memberRole.length != 0){
+    return memberRole[0].name;
+  }
+  return("");
 };
 
 exports.isUserInClub = async (userId, clubId) => {
@@ -151,8 +174,9 @@ exports.isUserInClub = async (userId, clubId) => {
     userId,
     clubId
   );
-  console.log(nbrMember)
+  console.log(nbrMember);
   res.json(nbrMember);
+
 };
 
 //EVENTS
@@ -161,15 +185,15 @@ exports.getEvents = async (_req, res) => {
     DB_PATH,
     "SELECT idEvent,idClub,name,description FROM events;"
   );
-  res.json(events);
+  res.json({events: events});
 };
 
-exports.get3LastEvents = async (_req, res) => {
+exports.getThreeLastEvents = async (_req, res) => {
   const events = await Database.Read(
     DB_PATH,
     "SELECT * FROM events ORDER BY idEvent DESC LIMIT 3 ;"
   );
-  res.json(events);
+  res.json({events: events});
 };
 
 // ROLES
