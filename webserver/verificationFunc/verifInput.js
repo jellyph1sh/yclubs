@@ -3,7 +3,7 @@ const stuffCtrlGet = require("../controlers/getControlers.js");
 const VerifInput = (s) => {
   // return true if the input is valide else false
   if (s == null) return false;
-  const banStrings = ["<", ">", "select", "update", "delete", "from"];
+  const banStrings = ["<", ">", "select", "update", "delete", "from"]; // those string are ban for prevent sql injection
   for (const banString of banStrings) {
     if (s.includes(banString)) {
       console.log(banString, "ban");
@@ -15,32 +15,30 @@ const VerifInput = (s) => {
 };
 
 const VerifEmail = (s) => {
+  // check if the email is in the correct format
   if (s == undefined) return false;
   return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(s);
 };
 
 const VerifName = (s, minLength = 3, maxLength = 25) => {
-  //return true if the name is valid else false
+  // return true if the name is valid else false
   // caract allowed : 'A-z' ' ' 'À-ú
   // length allowed : minLength <= currentLength <= maxLength
+  // caract not allowed : special caracters (!:, etc)
   if (s == null) return false;
   const regx = new RegExp(`^[\\w\\sÀ-ú]{${minLength},${maxLength}}$`);
   return regx.test(s) && VerifInput(s);
 };
 
-// const VerifImage = (s) => {
-//   if (s == undefined) return false;
-//   return /\.(jpg|jpeg|png|webp|avif|gif)$/.test(s);
-// };
-
 const VerifTags = (a) => {
+  // allow to check every tags of an array
   for (const v of a) {
     if (!VerifName(v, 3, 20)) return false;
   }
   return true;
 };
 
-// ManageVerif return an empty string if all data are valid otherwise it return the error code of the first error that is catch
+// ManageVerif return "" if all data are valid otherwise it return the error code of the first error that is catch
 // This function is usefull for prevent sql injection or corrupt data
 //
 // Possible action :
@@ -57,7 +55,7 @@ const VerifTags = (a) => {
 //       (userExistId,clubExistId)
 // Error code :
 //       (invalidClubName,invalidParentClubName,invalidRoleName,invalidName,
-//        invalidEmail,invalidPassword,invalidDate,invalidImage,invalidAlias,
+//        invalidEmail,invalidPassword,invalidDate,invalidAlias,
 //        invalidDescription,invalidTags,invalidCapital,invalidId,invalidUserId,
 //        invalidClubId
 //        invalidDataType
@@ -123,11 +121,6 @@ exports.ManageVerif = (elementsToCheck) => {
           return "invalidDate";
         }
         break;
-      // case "image":
-      //   if (!VerifImage(element.data)) {
-      //     return "invalidImage";
-      //   }
-      //   break;
       case "alias":
         if (!VerifName(element.data, 2, 4)) {
           return "invalidAlias";

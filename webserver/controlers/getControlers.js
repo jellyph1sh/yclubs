@@ -36,7 +36,6 @@ exports.getLastClubs = async (req, res) => {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
-  console.log("test");
   const clubs = await Database.Read(
     DB_PATH,
     "SELECT * FROM clubs ORDER BY idClub DESC LIMIT 1 ;"

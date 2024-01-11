@@ -5,8 +5,16 @@ const moment = require("moment");
 const hashFunc = require("../verificationFunc/password.js");
 const stuffCtrlGet = require("./getControlers.js");
 
+// 1) Verification of incoming data :
+//    - stop the request if there is a problem with incoming data
+//    - otherwise continue
+//
+// 2) Adding club in database
+//
+// 3) Adding tags and link them with the newly created club
 exports.addClub = async (req, res) => {
   const club = req.body;
+  // 1)
   const verifResult = Verif.ManageVerif([
     { dataType: "clubName", data: club.name },
     { dataType: "description", data: club.description },
@@ -19,6 +27,7 @@ exports.addClub = async (req, res) => {
     res.json({ status: false, error: verifResult });
     return;
   }
+  // 2)
   let parentClubId = null;
   if (club.parentClubName != "none") {
     parentClubId = await Database.Read(
@@ -42,6 +51,7 @@ exports.addClub = async (req, res) => {
     res.json({ status: false, errorType: err.code });
     return;
   }
+  // 3)
   const tags = club.tags.split(" ");
   let clubId = await Database.Read(
     DB_PATH,
@@ -80,8 +90,14 @@ exports.addClub = async (req, res) => {
   res.json({ status: true });
 };
 
+// 1) Verification of incoming data :
+//    - stop the request if there is a problem with incoming data
+//    - otherwise continue
+//
+// 2) Adding user in database with an encrypt password
 exports.addUser = async (req, res) => {
   const user = req.body;
+  // 1)
   const verifResult = Verif.ManageVerif([
     { dataType: "email", data: user.email },
     { dataType: "name", data: user.firstname },
@@ -92,6 +108,7 @@ exports.addUser = async (req, res) => {
     res.json({ status: false, error: verifResult });
     return;
   }
+  // 2)
   const password = hashFunc.hashPassword("sha256", "base64", user.password);
   const err = await Database.Write(
     DB_PATH,
@@ -111,12 +128,18 @@ exports.addUser = async (req, res) => {
   res.json({ status: true });
 };
 
+// 1) Verification of incoming data :
+//    - stop the request if there is a problem with incoming data
+//    - otherwise continue
+//
+// 2) Adding a new member to a club with a role
 exports.addClubMember = async (req, res) => {
   const club = req.body;
+  // 1)
   const verifResult = Verif.ManageVerif([
     { dataType: "parentClubName", data: club.clubName }, // the parent club is the member's new club
     { dataType: "clubName", data: club.clubName },
-    { dataType: "roleAssign", data: club.roleName },
+    { dataType: "roleAssign", data: club.roleName }, // if the role is not previously create it will return an error code
     { dataType: "userExistId", data: club.userId },
   ]);
   if (verifResult != "") {
@@ -133,6 +156,7 @@ exports.addClubMember = async (req, res) => {
     res.json({ status: false, error: "userAlreadyInClub" });
     return;
   }
+  // 2
   const roleId = await Database.Read(
     DB_PATH,
     "SELECT idRole FROM roles WHERE name=?;",
