@@ -38,7 +38,7 @@ router.delete("/tags/deleteToClubs", stuffCtrlDelete.deleteTagClub);
 
 // EVENTS
 router.get("/events/getall", stuffCtrlGet.getEvents);
-router.get("/events/get3Last", stuffCtrlGet.get3LastEvents);
+router.get("/events/get3Last", stuffCtrlGet.getThreeLastEvents);
 router.post("/events/add", stuffCtrlAdd.addEvent);
 // router.get("/events/getClub", stuffCtrlGet.getClubEvent);
 

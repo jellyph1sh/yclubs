@@ -8,6 +8,7 @@ exports.verifyToken = (req) => {
     return false;
   }
   const decodedToken = jwt.verify(token, SECRET_TOKEN);
+  console.log(decodedToken)
   return { userId: decodedToken.userId, email: decodedToken.email };
 };
 
