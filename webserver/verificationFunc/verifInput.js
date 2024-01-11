@@ -74,11 +74,10 @@ exports.ManageVerif = (elementsToCheck) => {
         if (element.data != null) {
           if (VerifName(element.data, 3, 20)) {
             const club = stuffCtrlGet.getOneClubByName(element.data);
-            if (isNaN(club)) {
+            if (club == "unknownClubName") {
               return "invalidParentClubName";
             }
           } else {
-            console.log(element.data);
             return "invalidParentClubName";
           }
         }
