@@ -5,22 +5,24 @@ import EventsBox from "../../components/EventsBox/EventsBox";
 import { CookiesProvider, useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
+import { useEffect } from "react";
 
 function Home() {
   const [cookies] = useCookies(["user"]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (cookies.user == null) {
+      navigate("/login");
+      return;
+    }
+  })
   return (
     <>
-      { cookies.user == null ?
-      navigate("/login")
-      :
-        <div className="body">
-          <NaviguationBar/>
-          <StatisticsBox/>
-          <LastClubBox/>
-          <EventsBox/>
-        </div>
-      }
+      <NaviguationBar/>
+      <StatisticsBox/>
+      <LastClubBox/>
+      <EventsBox/>
     </>
   )
 };
