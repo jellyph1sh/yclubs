@@ -2,7 +2,7 @@ const Database = require("../Database.js");
 const DB_PATH = "./clubs.db";
 const Verif = require("../verificationFunc/verifInput.js");
 const hashFunc = require("../verificationFunc/password.js");
-const jwt = require("jsonwebtoken");
+const tokenFunc = require("../verificationFunc/token.js");
 
 // CLUBS
 exports.getClubs = async (_req, res) => {
@@ -80,29 +80,24 @@ exports.loginUsers = async (req, res) => {
     "SELECT idUser,lastname,firstname,email,password,isAdmin FROM users WHERE email=?;",
     loginUser.email
   );
-  if (users.length!= 0){
-    if (users[0].password == hashFunc.hashPassword("sha256", "base64", loginUser.password)
+  if (users.length != 0) {
+    if (
+      users[0].password ==
+      hashFunc.hashPassword("sha256", "base64", loginUser.password)
     ) {
-      res.json({isLogin: true, user : JSON.stringify(users[0])});
-      return
+      const token = tokenFunc.createToken(users.userId, loginUser.email);
+      res.json({ isLogin: true, user: JSON.stringify(users[0]), token: token  });
+      return;
     } else {
-      res.json({error: "Password is false", isLogin: false });
-      return
+      res.json({ error: "Password is false", isLogin: false });
+      return;
     }
   }
-  res.json({error: "email is false", isLogin: false });
+  res.json({ error: "email is false", isLogin: false });
   if (
     users[0].password ==
     hashFunc.hashPassword("sha256", "base64", loginUser.password)
   ) {
-    const token = jwt.sign(
-      {
-        id: users[0].id,
-        username: users[0].email,
-      },
-      process.env.SECRET_TOKEN,
-      { expiresIn: "6 hours" }
-    );
     res.json({ isLogin: true, user: users, access_token: token });
   } else {
     res.json({
@@ -161,10 +156,10 @@ exports.getMemberRole = async (idClub, idUser) => {
     idClub,
     idUser
   );
-  if (memberRole.length != 0){
+  if (memberRole.length != 0) {
     return memberRole[0].name;
   }
-  return("");
+  return "";
 };
 
 exports.isUserInClub = async (userId, clubId) => {
@@ -176,7 +171,6 @@ exports.isUserInClub = async (userId, clubId) => {
   );
   console.log(nbrMember);
   res.json(nbrMember);
-
 };
 
 //EVENTS
