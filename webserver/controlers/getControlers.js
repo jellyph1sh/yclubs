@@ -1,14 +1,11 @@
 const Database = require("../Database.js");
-const crypto = require("crypto");
 const DB_PATH = "./clubs.db";
 const Verif = require("../verificationFunc/verifInput.js");
-const moment = require("moment");
 const hashFunc = require("../verificationFunc/password.js");
-const stuffCtrlGet = require("./getControlers.js");
 
 // CLUBS
-exports.getClubs = async (req, res) => {
-  let clubs = await Database.Read(
+exports.getClubs = async (_req, res) => {
+  const clubs = await Database.Read(
     DB_PATH,
     "SELECT idClub,idClubParent,name,description,capital FROM clubs;"
   );
@@ -50,7 +47,7 @@ exports.getClubById = async (clubId) => {
   return clubs[0];
 };
 
-exports.getNbrClubs = async (req, res) => {
+exports.getNbrClubs = async (_req, res) => {
   const nbrClubs = await Database.Read(
     DB_PATH,
     "SELECT COUNT(idClub) FROM clubs;"

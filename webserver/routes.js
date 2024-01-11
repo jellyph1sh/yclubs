@@ -57,7 +57,7 @@ function mergeSort(arr) {
   const right = arr.slice(middle);
 
   const fusion = (left, right) => {
-    let result = [];
+    const result = [];
     let leftIndex = 0;
     let rightIndex = 0;
 
