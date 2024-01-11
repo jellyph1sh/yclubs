@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./Login.css";
 
 function Login() {
@@ -8,8 +9,10 @@ function Login() {
     e.preventDefault();
     await axios.post("http://localhost:3001/api/users/login", {email: e.target.email.value, password: e.target.password.value})
       .then((res) => {
-        if (res.isLogin) {
+        console.log(res.data.isLogin)
+        if (res.data.isLogin) {
           navigate("/");
+          return;
         }
         navigate("/login")
       })
