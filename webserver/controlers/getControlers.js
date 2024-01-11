@@ -191,9 +191,9 @@ exports.getEvents = async (_req, res) => {
 exports.getThreeLastEvents = async (_req, res) => {
   const events = await Database.Read(
     DB_PATH,
-    "SELECT * FROM events ORDER BY idEvent DESC LIMIT 3 ;"
+    "SELECT events.name AS name, events.description AS description, clubs.alias AS alias FROM events JOIN clubs ON events.idClub = clubs.idClub ORDER BY idEvent DESC LIMIT 3 ;"
   );
-  res.json({events: events});
+  res.json({events: JSON.stringify(events)});
 };
 
 // ROLES
