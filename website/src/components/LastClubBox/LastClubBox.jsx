@@ -1,15 +1,30 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import "./LastClubBox.css"
 
 const LastClubBox = () => {
+    const [lastClub, setLastClub] = useState([]);
+
+
+    useEffect(() => {
+        axios.get("http://localhost:3001/api/clubs/getLast")
+        .then((response) => {
+            setLastClub(response.data["club"]);
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+    });
+
     return (
         <div className="lc-box">
             <h2 className="lc-title">Dernier club créé</h2>
             <div className="lc-content">
-                <img className="lc-club-logo" src="/src/assets/images/fake_club_logo.jpg" alt="club logo" />
+                <img className="lc-club-logo" src={lastClub.image} alt="club logo" />
                 <div className="lc-club-info">
-                    <h3 className="lc-club-title">Bureau des sports</h3>
-                    <h4 className="lc-club-alias">Alias BDS</h4>
-                    <p className="lc-club-description">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nisi voluptatem saepe cupiditate autem voluptatibus vel voluptas laboriosam quo! Excepturi voluptatum sit corporis perspiciatis animi accusamus a magni aliquam distinctio doloremque!</p>
+                    <h3 className="lc-club-title">{lastClub.name}</h3>
+                    <h4 className="lc-club-alias">{lastClub.alias}</h4>
+                    <p className="lc-club-description">{lastClub.description}</p>
                 </div>
             </div>
             <a className="lc-details" href="/club">Voir plus de détails</a>
