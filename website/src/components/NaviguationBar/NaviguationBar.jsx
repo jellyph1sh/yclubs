@@ -1,6 +1,9 @@
 import "./NaviguationBar.css"
+import { useCookies } from "react-cookie";
 
 const NaviguationBar = () => {
+    const [cookies, setCookie, removeCookie] = useCookies(["user"]);
+
     return (
         <div className="navbar">
             <div className="nav-header">
@@ -18,7 +21,7 @@ const NaviguationBar = () => {
                 </div>
                 <div className="nav-bottom-buttons">
                     <button className="b-createClub">Créer son club</button>
-                    <button className="b-disconnect">Déconnexion</button>
+                    <button className="b-disconnect" onClick={() => {removeCookie("user")}}>Déconnexion</button>
                 </div>
             </div>
         </div>

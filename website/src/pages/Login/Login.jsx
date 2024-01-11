@@ -1,16 +1,18 @@
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import axios from "axios";
 import "./Login.css";
 
 function Login() {
   const navigate = useNavigate();
+  const [cookies, setCookie] = useCookies(["user"]);
 
   const loginUser = async (e) => {
     e.preventDefault();
     await axios.post("http://localhost:3001/api/users/login", {email: e.target.email.value, password: e.target.password.value})
       .then((res) => {
-        console.log(res.data.isLogin)
         if (res.data.isLogin) {
+          setCookie("user", JSON.parse(res.data.user).idUser, { path: "/" });
           navigate("/");
           return;
         }
