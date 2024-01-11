@@ -28,10 +28,10 @@ const VerifName = (s, minLength = 3, maxLength = 25) => {
   return regx.test(s) && VerifInput(s);
 };
 
-const VerifImage = (s) => {
-  if (s == undefined) return false;
-  return /\.(jpg|jpeg|png|webp|avif|gif)$/.test(s);
-};
+// const VerifImage = (s) => {
+//   if (s == undefined) return false;
+//   return /\.(jpg|jpeg|png|webp|avif|gif)$/.test(s);
+// };
 
 const VerifTags = (a) => {
   for (const v of a) {
@@ -171,7 +171,6 @@ exports.ManageVerif = (elementsToCheck) => {
           return "invalidClubId";
         }
         break;
-
       default:
         return "invalidDataType";
     }
