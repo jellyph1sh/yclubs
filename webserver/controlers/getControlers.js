@@ -80,6 +80,17 @@ exports.loginUsers = async (req, res) => {
     "SELECT idUser,lastname,firstname,email,password,isAdmin FROM users WHERE email=?;",
     loginUser.email
   );
+  if (users.length!= 0){
+    if (users[0].password == hashFunc.hashPassword("sha256", "base64", loginUser.password)
+    ) {
+      res.json({isLogin: true, user : JSON.stringify(users[0])});
+      return
+    } else {
+      res.json({error: "Password is false", isLogin: false });
+      return
+    }
+  }
+  res.json({error: "email is false", isLogin: false });
   if (
     users[0].password ==
     hashFunc.hashPassword("sha256", "base64", loginUser.password)
@@ -150,7 +161,10 @@ exports.getMemberRole = async (idClub, idUser) => {
     idClub,
     idUser
   );
-  return memberRole[0].name;
+  if (memberRole.length != 0){
+    return memberRole[0].name;
+  }
+  return("");
 };
 
 exports.isUserInClub = async (userId, clubId) => {
@@ -162,6 +176,7 @@ exports.isUserInClub = async (userId, clubId) => {
   );
   console.log(nbrMember);
   res.json(nbrMember);
+
 };
 
 //EVENTS
