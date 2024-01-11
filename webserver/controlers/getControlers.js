@@ -20,14 +20,16 @@ exports.getOneClubByName = async (clubName) => {
     { dataType: "clubName", data: clubName },
   ]);
   if (verifResult != "") {
-    res.json({ status: false, error: verifResult });
-    return;
+    return "invalidClubName";
   }
   const clubs = await Database.Read(
     DB_PATH,
     "SELECT * FROM clubs WHERE name=?;",
     clubName
   );
+  if (clubs.length == 0) {
+    return "unknownClubName";
+  }
   return clubs[0];
 };
 
@@ -113,6 +115,25 @@ exports.getNbrMembers = async (_req, res) => {
     "SELECT COUNT(DISTINCT idUser) FROM membersClubs;"
   );
   res.json(nbrMember);
+};
+
+exports.getMembersClub = async (req, res) => {
+  // TO DO : définir quelles données sont utiles lors de la récupération des utilisateurs
+  const data = req.query;
+  const club = await this.getOneClubByName(data.clubName);
+  if (club == "invalidClubName" || club == "unknownClubName") {
+    res.json({ status: false, error: club });
+    return;
+  }
+  console.log(club)
+  console.log(club.idClub)
+
+  const members = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM users JOIN membersClubs ON users.idUser = membersClubs.idUser WHERE idClub = ?;",
+    club.idClub
+  );
+  res.json(members);
 };
 
 exports.getMemberRole = async (idClub,idUser) => {

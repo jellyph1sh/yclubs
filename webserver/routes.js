@@ -21,8 +21,9 @@ router.post("/users/login", stuffCtrlGet.loginUsers);
 router.post("/users/add", stuffCtrlAdd.addUser);
 
 // CLUB MEMBERS
-router.post("/clubsMembers/add", stuffCtrlAdd.addClubMember);
 router.get("/clubsMembers/getNbrMembers", stuffCtrlGet.getNbrMembers);
+router.post("/clubsMembers/getMembersByClub", stuffCtrlGet.getMembersClub);
+router.post("/clubsMembers/add", stuffCtrlAdd.addClubMember);
 // router.post("/clubsMembers/update", stuffCtrlUpdate.updateMember);
 router.post("/clubsMembers/updateRoles", stuffCtrlUpdate.updateRoleMember);
 // router.delete('/clubsMembers/delete',stuffCtrlDelete.ClubMember)
@@ -33,8 +34,7 @@ router.post("/roles/add", stuffCtrlAdd.addRole);
 
 // TAGS
 router.post("/tags/addToClub", stuffCtrlAdd.addTagToClub);
-router.delete('/tags/deleteToClubs',stuffCtrlDelete.deleteTagClub)
-
+router.delete("/tags/deleteToClubs", stuffCtrlDelete.deleteTagClub);
 
 // EVENTS
 router.get("/events/getall", stuffCtrlGet.getEvents);
