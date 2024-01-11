@@ -2,6 +2,7 @@ const Database = require("../Database.js");
 const DB_PATH = "./clubs.db";
 const Verif = require("../verificationFunc/verifInput.js");
 const hashFunc = require("../verificationFunc/password.js");
+const jwt = require("jsonwebtoken");
 
 // CLUBS
 exports.getClubs = async (_req, res) => {
@@ -83,7 +84,15 @@ exports.loginUsers = async (req, res) => {
     users[0].password ==
     hashFunc.hashPassword("sha256", "base64", loginUser.password)
   ) {
-    res.json({ isLogin: true, users });
+    const token = jwt.sign(
+      {
+        id: users[0].id,
+        username: users[0].email,
+      },
+      process.env.SECRET_TOKEN,
+      { expiresIn: "6 hours" }
+    );
+    res.json({ isLogin: true, user: users, access_token: token });
   } else {
     res.json({
       status: false,
@@ -151,7 +160,7 @@ exports.isUserInClub = async (userId, clubId) => {
     userId,
     clubId
   );
-  console.log(nbrMember)
+  console.log(nbrMember);
   res.json(nbrMember);
 };
 
