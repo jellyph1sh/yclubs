@@ -41,7 +41,13 @@
 
 .e-events::-webkit-scrollbar {
     display: none;
-  }
+}
+
+.no-events {
+    text-align: center;
+    color: #5C5C5C;
+    font-size: 16px;
+}
 
 .e-details {
     color: #23B2A4;

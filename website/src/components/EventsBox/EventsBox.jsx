@@ -20,9 +20,13 @@ const EventsBox = () => {
         <div className="e-box">
             <h2 className="e-title">Evenements</h2>
             <div className="e-events">
-                {events.map(event => (
-                    <EventNotif info={event}/>
-                ))}
+                {
+                    events.length == 0
+                    ? <p className="no-events">Aucun évènements</p> :
+                    events.map(event => (
+                        <EventNotif info={event}/>
+                    ))
+                }
             </div>
             <a className="e-details" href="/events">Voir plus d'évènements</a>
         </div>
