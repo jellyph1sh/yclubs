@@ -1,0 +1,59 @@
+.ec-box {
+    position: relative;
+    background-color: white;
+    color: #5C5C5C;
+    width: 34vw;
+    height: 23vh;
+    border-radius: 20px;
+}
+
+.ec-date {
+    position: absolute;
+    top: 0.5em;
+    left: 0.5em;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.ec-titles {
+    margin-top: 0.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ec-title {
+    font-weight: bold;
+    font-size: 32px;
+}
+
+.ec-alias {
+    font-weight: normal;
+    font-size: 24px;
+}
+
+.ec-desc {
+    margin: 1em 0.5em;
+    font-weight: normal;
+    font-size: 14px;
+}
+
+.ec-button {
+    margin-right: 0.5em;
+    padding: 0.5em 3em;
+    border-radius: 10px;
+    float: right;
+    font-weight: bold;
+    font-size: 20px;
+    background-color: #23B2A4;
+}
+
+.ec-button:hover {
+    color: #23B2A4;
+    background-color: white;
+    border: 1px solid #23B2A4;
+}
+
+.ec-button:focus {
+    outline: none;
+}
