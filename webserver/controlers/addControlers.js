@@ -32,7 +32,7 @@ exports.addClub = async (req, res) => {
     DB_PATH,
     "INSERT INTO clubs(idClubParent,name,description,capital,alias,image) VALUES(?,?,?,?,?,?)",
     parentClubId,
-    club.name,
+    club.clubName,
     club.description,
     parseInt(club.capital),
     club.alias,
@@ -47,7 +47,7 @@ exports.addClub = async (req, res) => {
   let clubId = await Database.Read(
     DB_PATH,
     "SELECT idClub FROM clubs WHERE name=?;",
-    club.name
+    club.clubName
   );
   clubId = clubId[0].idClub;
   for (const tag of tags) {
@@ -115,7 +115,6 @@ exports.addUser = async (req, res) => {
 exports.addClubMember = async (req, res) => {
   const club = req.body;
   const verifResult = Verif.ManageVerif([
-    { dataType: "email", data: club.email },
     { dataType: "parentClubName", data: club.clubName }, // the parent club is the member's new club
     { dataType: "roleAssign", data: club.roleName },
     { dataType: "userExistId", data: club.userId },
