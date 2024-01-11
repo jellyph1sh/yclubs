@@ -10,7 +10,7 @@ exports.getClubs = async (_req, res) => {
     DB_PATH,
     "SELECT idClub,idClubParent,name,description,capital FROM clubs;"
   );
-  res.json(clubs);
+  res.json({clubs: clubs});
 };
 
 exports.getOneClubByName = async (clubName) => {
@@ -36,7 +36,7 @@ exports.getLastClubs = async (_req, res) => {
     DB_PATH,
     "SELECT * FROM clubs ORDER BY idClub DESC LIMIT 1 ;"
   );
-  res.json(clubs);
+  res.json({club: clubs[0]});
 };
 
 exports.getClubById = async (clubId) => {
@@ -51,9 +51,9 @@ exports.getClubById = async (clubId) => {
 exports.getNbrClubs = async (_req, res) => {
   const nbrClubs = await Database.Read(
     DB_PATH,
-    "SELECT COUNT(idClub) FROM clubs;"
+    "SELECT COUNT(idClub) AS nbrClubs FROM clubs;"
   );
-  res.json(nbrClubs);
+  res.json({nbrClubs: nbrClubs[0].nbrClubs});
 };
 
 // USERS
@@ -62,7 +62,7 @@ exports.getAllUsers = async (_req, res) => {
     DB_PATH,
     "SELECT idUser,lastname,firstname,email,password,isAdmin FROM users;"
   );
-  res.json(users);
+  res.json({allUsers: users});
 };
 
 exports.loginUsers = async (req, res) => {
@@ -133,9 +133,9 @@ exports.getUserById = async (userId) => {
 exports.getNbrMembers = async (_req, res) => {
   const nbrMember = await Database.Read(
     DB_PATH,
-    "SELECT COUNT(DISTINCT idUser) FROM membersClubs;"
+    "SELECT COUNT(DISTINCT idUser) AS nbrMember FROM membersClubs;"
   );
-  res.json(nbrMember);
+  res.json({nbrMember: nbrMember[0].nbrMember});
 };
 
 exports.getMembersClub = async (req, res) => {
@@ -151,7 +151,7 @@ exports.getMembersClub = async (req, res) => {
     "SELECT * FROM users JOIN membersClubs ON users.idUser = membersClubs.idUser WHERE idClub = ?;",
     club.idClub
   );
-  res.json(members);
+  res.json({members:members});
 };
 
 exports.getMemberRole = async (idClub, idUser) => {
@@ -185,15 +185,15 @@ exports.getEvents = async (_req, res) => {
     DB_PATH,
     "SELECT idEvent,idClub,name,description FROM events;"
   );
-  res.json(events);
+  res.json({events: events});
 };
 
-exports.get3LastEvents = async (_req, res) => {
+exports.getThreeLastEvents = async (_req, res) => {
   const events = await Database.Read(
     DB_PATH,
     "SELECT * FROM events ORDER BY idEvent DESC LIMIT 3 ;"
   );
-  res.json(events);
+  res.json({events: events});
 };
 
 // ROLES
