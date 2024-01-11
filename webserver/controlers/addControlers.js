@@ -7,14 +7,13 @@ const hashFunc = require("../verificationFunc/password.js");
 const stuffCtrlGet = require("./getControlers.js");
 
 exports.addClub = async (req, res) => {
-  const club = req.body;
+  const club = req.query;
   const verifResult = Verif.ManageVerif([
-    { dataType: "clubname", data: club.clubName },
+    { dataType: "clubName", data: club.name },
     { dataType: "description", data: club.description },
     { dataType: "parentClubName", data: club.parentClubName },
     { dataType: "alias", data: club.alias },
     { dataType: "capital", data: club.capital },
-    { dataType: "image", data: club.image },
     { dataType: "tags", data: club.tags },
   ]);
   if (verifResult != "") {
