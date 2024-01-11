@@ -8,7 +8,7 @@ const StatisticsBox = () => {
 
     axios.get("http://localhost:3001/api/clubs/getNbrClub")
         .then((response) => {
-            setClubNb(response.data[0]["COUNT(idClub)"]);
+            setClubNb(response.data["nbrClubs"]);
         })
         .catch(function (error) {
             console.log(error);
@@ -16,7 +16,7 @@ const StatisticsBox = () => {
 
     axios.get("http://localhost:3001/api/clubsMembers/getNbrMembers")
         .then((response) => {
-            setMembersNbr(response.data[0]["COUNT(DISTINCT idUser)"]);
+            setMembersNbr(response.data["nbrMember"]);
         })
         .catch(function (error) {
             console.log(error);
