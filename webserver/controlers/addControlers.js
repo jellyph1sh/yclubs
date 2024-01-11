@@ -7,7 +7,7 @@ const hashFunc = require("../verificationFunc/password.js");
 const stuffCtrlGet = require("./getControlers.js");
 
 exports.addClub = async (req, res) => {
-  const club = req.query;
+  const club = req.body;
   const verifResult = Verif.ManageVerif([
     { dataType: "clubName", data: club.name },
     { dataType: "description", data: club.description },
@@ -116,6 +116,7 @@ exports.addClubMember = async (req, res) => {
   const club = req.body;
   const verifResult = Verif.ManageVerif([
     { dataType: "parentClubName", data: club.clubName }, // the parent club is the member's new club
+    { dataType: "clubName", data: club.clubName },
     { dataType: "roleAssign", data: club.roleName },
     { dataType: "userExistId", data: club.userId },
   ]);
@@ -128,6 +129,11 @@ exports.addClubMember = async (req, res) => {
     "SELECT idClub FROM clubs WHERE name=?;",
     club.clubName
   );
+  const userInClub = stuffCtrlGet.isUserInClub(club.userId, clubId);
+  if (userInClub != 0) {
+    res.json({ status: false, error: "userAlreadyInClub" });
+    return;
+  }
   const roleId = await Database.Read(
     DB_PATH,
     "SELECT idRole FROM roles WHERE name=?;",
@@ -174,7 +180,7 @@ exports.addRole = async (req, res) => {
 };
 
 exports.addEvent = async (req, res) => {
-  const event = req.query;
+  const event = req.body;
   const verifResult = Verif.ManageVerif([
     { dataType: "name", data: event.name },
     { dataType: "description", data: event.description },

@@ -86,9 +86,13 @@ exports.loginUsers = async (req, res) => {
     users[0].password ==
     hashFunc.hashPassword("sha256", "base64", loginUser.password)
   ) {
-    res.json({isLogin: true, users});
+    res.json({ isLogin: true, users });
   } else {
-    res.json({ status: false, error: "Password or email is false", isLogin: false });
+    res.json({
+      status: false,
+      error: "Password or email is false",
+      isLogin: false,
+    });
   }
 };
 
@@ -119,15 +123,12 @@ exports.getNbrMembers = async (_req, res) => {
 
 exports.getMembersClub = async (req, res) => {
   // TO DO : définir quelles données sont utiles lors de la récupération des utilisateurs
-  const data = req.query;
+  const data = req.body;
   const club = await this.getOneClubByName(data.clubName);
   if (club == "invalidClubName" || club == "unknownClubName") {
     res.json({ status: false, error: club });
     return;
   }
-  console.log(club)
-  console.log(club.idClub)
-
   const members = await Database.Read(
     DB_PATH,
     "SELECT * FROM users JOIN membersClubs ON users.idUser = membersClubs.idUser WHERE idClub = ?;",
@@ -136,14 +137,25 @@ exports.getMembersClub = async (req, res) => {
   res.json(members);
 };
 
-exports.getMemberRole = async (idClub,idUser) => {
+exports.getMemberRole = async (idClub, idUser) => {
   const memberRole = await Database.Read(
     DB_PATH,
     "SELECT roles.name FROM membersClubs INNER JOIN roles on roles.idRole = membersClubs.idRole WHERE membersClubs.idClub=? AND membersClubs.idUser=?;",
     idClub,
-    idUser,
+    idUser
   );
-  return(memberRole[0].name);
+  return memberRole[0].name;
+};
+
+exports.isUserInClub = async (userId, clubId) => {
+  const nbrMember = await Database.Read(
+    DB_PATH,
+    "SELECT COUNT(DISTINCT idUser) FROM membersClubs WHERE idUser = ? AND idClub = ?;",
+    data.userId,
+    data.clubId
+  );
+  console.log(nbrMember)
+  res.json(nbrMember);
 };
 
 //EVENTS

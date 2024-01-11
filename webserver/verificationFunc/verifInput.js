@@ -171,7 +171,6 @@ exports.ManageVerif = (elementsToCheck) => {
           return "invalidClubId";
         }
         break;
-
       default:
         return "invalidDataType";
     }
