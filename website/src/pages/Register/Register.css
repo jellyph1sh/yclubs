@@ -159,6 +159,12 @@
     text-transform: uppercase;
 }
 
+.register-right form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .register-inputs {
     display: flex;
     flex-direction: column;
@@ -211,7 +217,7 @@
     padding: 0.5em 2em;
     background-color: #23B2A4;
     font-weight: bold;
-    margin-bottom: 2em;
+    margin: 2em 0;
 }
 
 .register-button-register:hover {
