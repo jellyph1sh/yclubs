@@ -13,7 +13,7 @@ router.get("/clubs/getLast", stuffCtrlGet.getLastClubs);
 router.get("/clubs/getNbrClub", stuffCtrlGet.getNbrClubs);
 router.post("/clubs/add", stuffCtrlAdd.addClub);
 router.post("/clubs/update", stuffCtrlUpdate.updateClub);
-// router.delete('/clubs/delete',stuffCtrlDelete.Club)
+router.delete('/clubs/delete',stuffCtrlDelete.deleteClub)
 
 // USERS
 router.get("/users/getall", stuffCtrlGet.getAllUsers);
