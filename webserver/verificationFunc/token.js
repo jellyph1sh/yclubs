@@ -1,13 +1,14 @@
 const jwt = require("jsonwebtoken");
 
-exports.verifyToken = (req, res) => {
+const SECRET_TOKEN = "clubs ynov secret token oiubfeiojebijzo";
+
+exports.verifyToken = (req) => {
   const token = req.data["token"];
   if (!token) {
-    res.json({ status: false, error: "inexistantToken" });
-    return;
+    return false;
   }
-  const decodedToken = jwt.verify(token, process.env.SECRET_TOKEN);
-  res.json({ userId: decodedToken.userId, email: decodedToken.email });
+  const decodedToken = jwt.verify(token, SECRET_TOKEN);
+  return { userId: decodedToken.userId, email: decodedToken.email };
 };
 
 exports.createToken = (userId, email) => {
@@ -16,7 +17,7 @@ exports.createToken = (userId, email) => {
       userId: userId,
       email: email,
     },
-    process.env.SECRET_TOKEN,
-    { expiresIn: "6 hours" }
+    SECRET_TOKEN,
+    { expiresIn: "1h" }
   );
 };

@@ -31,7 +31,12 @@ exports.getOneClubByName = async (clubName) => {
   return clubs[0];
 };
 
-exports.getLastClubs = async (_req, res) => {
+exports.getLastClubs = async (req, res) => {
+  if (!tokenFunc.verifToken(req)) {
+    res.json({ status: false, error: "inexistantToken" });
+    return;
+  }
+  console.log("test");
   const clubs = await Database.Read(
     DB_PATH,
     "SELECT * FROM clubs ORDER BY idClub DESC LIMIT 1 ;"
@@ -57,7 +62,10 @@ exports.getNbrClubs = async (_req, res) => {
 };
 
 // USERS
-exports.getAllUsers = async (_req, res) => {
+exports.getAllUsers = async (req, res) => {
+  if (!tokenFunc.verifToken(req)) {
+    res.json({ status: false, error: "inexistantToken" });
+  }
   const users = await Database.Read(
     DB_PATH,
     "SELECT idUser,lastname,firstname,email,password,isAdmin FROM users;"
@@ -86,7 +94,8 @@ exports.loginUsers = async (req, res) => {
       hashFunc.hashPassword("sha256", "base64", loginUser.password)
     ) {
       const token = tokenFunc.createToken(users.userId, loginUser.email);
-      res.json({ isLogin: true, user: JSON.stringify(users[0]), token: token  });
+      console.log(token);
+      res.json({ isLogin: true, user: JSON.stringify(users[0]), token: token });
       return;
     } else {
       res.json({ error: "Password is false", isLogin: false });
