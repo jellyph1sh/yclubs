@@ -6,6 +6,7 @@ import Explore from "../pages/Explore/Explore";
 import Events from "../pages/Events/Events";
 import AdminClub from "../pages/AdminClub/AdminClub";
 import Club from "../pages/Club/Club";
+import AdminAsso from "../pages/AdminAsso/AdminAsso";
 
 const Ways = () => {
     return (
@@ -18,6 +19,7 @@ const Ways = () => {
             <Route path="/explore" element={<Explore/>}/>
             <Route path="/events" element={<Events/>}/>
             <Route path="/admin-club" element={<AdminClub/>}/>
+            <Route path="/admin-asso" element={<AdminAsso/>}/>
             <Route path="*" element={<Home/>}/>
         </Routes>
     </BrowserRouter>
