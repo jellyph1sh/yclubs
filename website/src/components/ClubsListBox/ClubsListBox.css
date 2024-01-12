@@ -4,11 +4,11 @@
 @media screen and (max-width:600px) {
 }
 
-.eca-box {
+.clb-box {
     position: absolute;
-    top: 10vh;
-    left: 30vw;
-    width: 30%;
+    top: 52.5vh;
+    left: 2vw;
+    width: 25vw;
     height: fit-content;
     display: flex;
     flex-direction: column;
@@ -19,47 +19,47 @@
     box-shadow: 5px 5px rgba(0, 0, 0, 0.25);
 }
 
-.eca-title {
+.clb-title {
     margin: 0.5em;
+    font-size: 24px;
     text-align: center;
 }
 
-.eca-events {
+.clb-clubs {
     display: flex;
     flex-direction: column;
     margin: 0.5em 1em;
-    height: 30vh;
+    height: 35vh;
     overflow-y: scroll;
-    gap: 2em;
 }
 
-.eca-events::-webkit-scrollbar {
+.clb-clubs::-webkit-scrollbar {
     display: none;
 }
 
-.event {
+.club {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    height: 5vh;
 }
 
-.event-header {
-    display: flex;
-    flex-direction: column;
+.club-name {
+    font-size: 16px;
+    font-weight: bold;
 }
 
-.event img {
+.club-description {
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.club img {
     width: 24px;
     height: 24px;
     filter: invert(50%);
 }
 
-.event img:hover {
+.club img:hover {
     cursor: pointer;
-}
-
-.event-desc {
-    text-align: left;
 }

@@ -14,7 +14,6 @@ const LastClubBox = () => {
     };
 
     useEffect(() => {
-        console.log("useeffect used")
         axios.get("http://localhost:3001/api/clubs/getLast",config)
         .then((response) => {
             setLastClub(response.data["club"])

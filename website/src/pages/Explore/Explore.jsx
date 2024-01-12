@@ -42,7 +42,7 @@ const Explore = () => {
                 <div className="list-cards">
                     {
                     clubs.map(club => (
-                        <ClubsCard info={club} key={club.idClub}/>
+                        <ClubsCard key={club.idClub} info={club}/>
                     ))
                     }
                 </div>

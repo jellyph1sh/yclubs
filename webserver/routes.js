@@ -9,7 +9,8 @@ const stuffCtrlDelete = require("./controlers/deleteControlers.js");
 // CLUBS
 router.get("/clubs/getall", stuffCtrlGet.getClubs);
 router.get("/clubs/getLast", stuffCtrlGet.getLastClubs);
-// router.get("/clubs/get_one", stuffCtrlGet.getOneClubs);
+router.post("/clubs/getOneById", stuffCtrlGet.getOneClubById);
+router.post("/clubs/getClubByIdUser", stuffCtrlGet.getClubByIdUser);
 router.get("/clubs/getNbrClub", stuffCtrlGet.getNbrClubs);
 router.post("/clubs/getAdminPage", stuffCtrlGet.getClubAdminPage);
 router.post("/clubs/add", stuffCtrlAdd.addClub);
