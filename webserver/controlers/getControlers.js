@@ -8,7 +8,7 @@ const tokenFunc = require("../verificationFunc/token.js");
 exports.getClubs = async (_req, res) => {
   const clubs = await Database.Read(
     DB_PATH,
-    "SELECT idClub,idClubParent,name,description,capital FROM clubs;"
+    "SELECT * FROM clubs;"
   );
   res.json({ clubs: clubs });
 };
