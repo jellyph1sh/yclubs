@@ -6,6 +6,7 @@ import ClubInfo from "../../components/ClubInfo/ClubInfo";
 import MembersBox from "../../components/MembersBox/MembersBox";
 import EventsClubAdmin from "../../components/EventsClubAdmin/EventsClubAdmin";
 import CreateEvent from "../../components/CreateEvent/CreateEvent";
+import CreateClub from "../../components/CreateClub/CreateClub";
 
 const AdminAsso = () => {
     /*const [cookies] = useCookies(["user", "token"]);
@@ -25,7 +26,7 @@ const AdminAsso = () => {
                 <div className="ac-header">
                     <h2 className="ac-title">Gestion Club de Tennis</h2>
                     <h3 className="ac-balance">Solde: <span className="bold">200€</span></h3>
-                    <ClubInfo/>
+                    <CreateClub/>
                     <MembersBox/>
                     <EventsClubAdmin/>
                     <CreateEvent/>
