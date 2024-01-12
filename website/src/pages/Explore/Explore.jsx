@@ -3,9 +3,12 @@ import NaviguationBar from "../../components/NaviguationBar/NaviguationBar";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import { useCookies } from "react-cookie";
 import "./Explore.css";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Explore = () => {
     const [cookies] = useCookies(["user"]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (cookies.user == null) {

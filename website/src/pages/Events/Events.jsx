@@ -3,9 +3,12 @@ import SearchBox from "../../components/SearchBox/SearchBox";
 import { useCookies } from "react-cookie";
 import "./Events.css";
 import EventsCard from "../../components/EventsCard/EventsCard";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Events = () => {
     const [cookies] = useCookies(["user"]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (cookies.user == null) {
