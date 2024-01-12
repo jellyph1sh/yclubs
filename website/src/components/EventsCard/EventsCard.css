@@ -76,7 +76,13 @@
 
 .ec-desc {
     margin: 1em 0.5em;
+    height: 26%;
     font-weight: normal;
+    overflow-y: scroll;
+}
+
+.ec-desc::-webkit-scrollbar {
+    display: none;
 }
 
 .ec-button {
