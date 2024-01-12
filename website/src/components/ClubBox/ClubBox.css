@@ -103,3 +103,7 @@
     font-size: 0.88vw;
     margin: 0vw 1vw 0vw 1vw
 }
+
+.club-event-card-arrow{
+    filter: invert(100%);
+}

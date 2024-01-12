@@ -6,15 +6,16 @@ import "./Club.css";
 import { useEffect } from "react";
 
 function Club() {
-  // const [cookies] = useCookies(["user"]);
-  // const navigate = useNavigate();
+  const [cookies] = useCookies(["user"]);
 
-  // useEffect(() => {
-  //   if (cookies.user == null) {
-  //     navigate("/login");
-  //     return;
-  //   }
-  // })
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (cookies.user == null) {
+      navigate("/login");
+      return;
+    }
+  })
   return (
     <>
       <NaviguationBar/>
