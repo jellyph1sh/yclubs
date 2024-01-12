@@ -213,6 +213,10 @@ exports.getClubAdminPage = async (req, res) => {
     "SELECT * FROM events WHERE idClub = ?",
     data.idClub
   );
-  console.log({ club: club, members: members, events: events });
-  res.json({ status: true, club: club, members: members, events: events });
+  res.json({
+    status: true,
+    club: club,
+    members: members,
+    events: events,
+  });
 };

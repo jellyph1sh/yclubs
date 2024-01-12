@@ -1,32 +1,38 @@
 const Database = require("../Database.js");
 const DB_PATH = "./clubs.db";
 const Verif = require("../verificationFunc/verifInput.js");
+const tokenFunc = require("../verificationFunc/token.js");
 const stuffCtrlGet = require("./getControlers.js");
 
 exports.updateClub = async (req, res) => {
-  if (!tokenFunc.verifToken(req)) {
+  if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
   const club = req.body;
   const verifResult = Verif.ManageVerif([
-    { dataType: "clubname", data: club.newName },
-    { dataType: "description", data: club.newDescription },
-    { dataType: "parentClubName", data: club.clubName },
+    { dataType: "clubExistId", data: club.idClub },
+    { dataType: "clubName", data: club.newName },
+    { dataType: "alias", data: club.alias },
+    { dataType: "description", data: club.description },
   ]);
   if (verifResult != "") {
     res.json({ status: false, error: verifResult });
     return;
   }
 
-  const clubId = stuffCtrlGet.getOneClubByName(club.clubName);
-  if ((await stuffCtrlGet.getMemberRole(clubId, club.idUser)) == "directeur") {
+  if (
+    true || // temp useless condition
+    (await stuffCtrlGet.getMemberRole(club.idClub, club.idUser)) == "directeur"
+  ) {
     const err = await Database.Write(
       DB_PATH,
-      "UPDATE clubs SET name=?, description=? WHERE idClub=?;",
+      "UPDATE clubs SET name=?, description=?,alias=?,image=? WHERE idClub=?;",
       club.newName,
-      club.newDescription,
-      clubId[0].idClub
+      club.description,
+      club.alias,
+      club.image,
+      club.idClub
     );
     if (err != null) {
       console.error(err);
@@ -41,7 +47,7 @@ exports.updateClub = async (req, res) => {
 };
 
 exports.updateRoleMember = async (req, res) => {
-  if (!tokenFunc.verifToken(req)) {
+  if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
@@ -83,7 +89,7 @@ exports.updateRoleMember = async (req, res) => {
 };
 
 exports.updateCapitalClub = async (req, res) => {
-  if (!tokenFunc.verifToken(req)) {
+  if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
@@ -173,4 +179,44 @@ exports.updateCapitalClub = async (req, res) => {
   }
   res.json({ status: false, error: "You don't have the permissions" });
   return;
+};
+
+exports.updateClubName = async (req, res) => {
+  if (!tokenFunc.verifyToken(req)) {
+    res.json({ status: false, error: "inexistantToken" });
+    return;
+  }
+  const club = req.body;
+  const verifResult = Verif.ManageVerif([
+    { dataType: "clubName", data: club.newName },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
+    return;
+  }
+  const isClubExist = await stuffCtrlGet.getOneClubByName(club.newName);
+  if (isClubExist != "unknownClubName") {
+    res.json({ status: false, error: "clubAlreadyExist" });
+    return;
+  }
+  if (
+    true
+    // (await stuffCtrlGet.getMemberRole(club.idClub, club.idUser)) == "directeur"
+  ) {
+    const err = await Database.Write(
+      DB_PATH,
+      "UPDATE clubs SET name=? WHERE idClub=?;",
+      club.newName
+    );
+    if (err != null) {
+      console.error(err);
+      res.json({ status: false });
+      return;
+    }
+    console.log("name edit");
+    res.json({ status: true });
+    return;
+  } else {
+    res.json({ status: false, error: "userNotOwner" });
+  }
 };

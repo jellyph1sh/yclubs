@@ -14,6 +14,7 @@ router.get("/clubs/getNbrClub", stuffCtrlGet.getNbrClubs);
 router.post("/clubs/getAdminPage", stuffCtrlGet.getClubAdminPage);
 router.post("/clubs/add", stuffCtrlAdd.addClub);
 router.post("/clubs/update", stuffCtrlUpdate.updateClub);
+// router.post("/clubs/updateName", stuffCtrlUpdate.updateClubName);
 router.delete("/clubs/delete", stuffCtrlDelete.deleteClub);
 
 // USERS

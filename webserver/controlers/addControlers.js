@@ -3,6 +3,7 @@ const DB_PATH = "./clubs.db";
 const Verif = require("../verificationFunc/verifInput.js");
 const moment = require("moment");
 const hashFunc = require("../verificationFunc/password.js");
+const tokenFunc = require("../verificationFunc/token.js");
 const stuffCtrlGet = require("./getControlers.js");
 
 // 1) Verification of incoming data :
@@ -13,7 +14,7 @@ const stuffCtrlGet = require("./getControlers.js");
 //
 // 3) Adding tags and link them with the newly created club
 exports.addClub = async (req, res) => {
-  if (!tokenFunc.verifToken(req)) {
+  if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
@@ -138,7 +139,7 @@ exports.addUser = async (req, res) => {
 //
 // 2) Adding a new member to a club with a role
 exports.addClubMember = async (req, res) => {
-  if (!tokenFunc.verifToken(req)) {
+  if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
@@ -192,7 +193,7 @@ exports.addClubMember = async (req, res) => {
 };
 
 exports.addRole = async (req, res) => {
-  if (!tokenFunc.verifToken(req)) {
+  if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
@@ -221,7 +222,7 @@ exports.addRole = async (req, res) => {
 };
 
 exports.addEvent = async (req, res) => {
-  if (!tokenFunc.verifToken(req)) {
+  if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
@@ -229,14 +230,14 @@ exports.addEvent = async (req, res) => {
   const verifResult = Verif.ManageVerif([
     { dataType: "name", data: event.name },
     { dataType: "description", data: event.description },
-    { dataType: "name", data: event.name },
+    { dataType: "clubExistId", data: event.idClub },
     { dataType: "date", data: event.date },
   ]);
   if (verifResult != "") {
     res.json({ status: false, error: verifResult });
     return;
   }
-  const date = moment(event.date, "DD/MM/YYYY").toDate();
+  const date = moment(event.date, "YYYY/MM/DD").toDate();
   const err = await Database.Write(
     DB_PATH,
     "INSERT INTO events(idClub,name,description,date) VALUES(?,?,?,?);",
@@ -247,14 +248,14 @@ exports.addEvent = async (req, res) => {
   );
   if (err != null) {
     console.error(err);
-    res.json({ status: false });
+    res.json({ status: false, error: err });
     return;
   }
   res.json({ status: true });
 };
 
 exports.addTagToClub = async (req, res) => {
-  if (!tokenFunc.verifToken(req)) {
+  if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
