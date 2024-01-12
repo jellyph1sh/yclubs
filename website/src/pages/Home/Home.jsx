@@ -11,12 +11,13 @@ function Home() {
   const [cookies] = useCookies(["user"]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (cookies.user == null) {
-      navigate("/login");
-      return;
-    }
-  })
+    useEffect(() => {
+      if (cookies.user == null) {
+        navigate("/login");
+        return;
+      }
+    },[]);
+
   return (
     <>
       <NaviguationBar/>
