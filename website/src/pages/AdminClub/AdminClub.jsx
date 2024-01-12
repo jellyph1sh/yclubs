@@ -68,8 +68,8 @@ const AdminClub = () => {
             Solde: <span className="bold">200€</span>
           </h3>
           {club && <ClubInfo club={club} />}
-          {club && <MembersBox club={club} />}
-          {club && <EventsClubAdmin club={club} members={members}/>}
+          {club && <MembersBox club={club} members={members} />}
+          {club && <EventsClubAdmin club={club} />}
           {club && <CreateEvent club={club} />}
         </div>
       </div>
