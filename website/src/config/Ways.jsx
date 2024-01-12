@@ -5,6 +5,7 @@ import Register from "../pages/Register/Register";
 import Explore from "../pages/Explore/Explore";
 import Events from "../pages/Events/Events";
 import AdminClub from "../pages/AdminClub/AdminClub";
+import Club from "../pages/Club/Club";
 
 const Ways = () => {
     return (
@@ -12,6 +13,7 @@ const Ways = () => {
         <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login/>}/>
+            <Route path="/club" element={<Club/>}/>
             <Route path="/register" element={<Register/>}/>
             <Route path="/explore" element={<Explore/>}/>
             <Route path="/events" element={<Events/>}/>
