@@ -4,10 +4,10 @@
 @media screen and (max-width:600px) {
 }
 
-.mb-box {
+.crc-box {
     position: absolute;
-    top: 52.5vh;
-    left: 31vw;
+    top: 45vh;
+    left: 60vw;
     width: fit-content;
     height: fit-content;
     display: flex;
@@ -19,65 +19,52 @@
     box-shadow: 5px 5px rgba(0, 0, 0, 0.25);
 }
 
-.mb-title {
+.crc-title {
     margin: 0.5em;
     text-align: center;
 }
 
-.mb-members {
+.crc-inputs {
+    margin: 1em;
     display: flex;
     flex-direction: column;
-    margin: 0.5em 1em;
-    height: 30vh;
-    overflow-y: scroll;
 }
 
-.mb-members::-webkit-scrollbar {
-    display: none;
-}
-
-.member {
+.crc-name, .crc-alias, .crc-desc, .crc-tags, .crc-image, .crc-balance, .crc-balance, .crc-chief {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
-.member img {
-    width: 24px;
-    height: 24px;
-    filter: invert(50%);
+.crc-inputs label {
+    font-size: 16px;
+    font-weight: normal;
 }
 
-.member img:hover {
-    cursor: pointer;
-}
-
-.mb-add-member {
-    margin: 1em 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
-#input-addmember {
+.crc-inputs input, .crc-inputs textarea {
     background-color: rgba(0, 0, 0, 0.0);
     border: 1px solid #5C5C5C;
     border-radius: 5px;
+    resize: none;
     color: #5C5C5C;
-    padding: 0 0.5em;
-    font-size: 16px;
-    margin: 0 0.5em;
+    padding: 0.25em 0.5em;
+    font-size: 14px;
 }
 
-.mb-add-member button {
+.crc-info input:focus, .crc-info textarea:focus {
+    outline: none;
+}
+
+.crc-inputs button {
+    margin-top: 0.5em;
     background-color: #23B2A4;
 }
 
-.mb-add-member button:hover {
+.crc-inputs button:hover {
     background-color: white;
     color: #23B2A4;
     border: 1px solid #23B2A4;
 }
 
-.mb-add-member button:focus {
+.crc-inputs button:focus {
     outline: none;
 }

@@ -6,8 +6,8 @@
 
 .ce-box {
     position: absolute;
-    top: 20vh;
-    left: 50vw;
+    top: 10vh;
+    left: 60vw;
     width: fit-content;
     height: fit-content;
     display: flex;
