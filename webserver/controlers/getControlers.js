@@ -29,14 +29,14 @@ exports.getOneClubByName = async (clubName) => {
 };
 
 exports.getOneClubById = async (req, res) => {
-  const club = req.body
+  const club = req.body;
   const verifResult = Verif.ManageVerif([
     { dataType: "id", data: club.idClub },
   ]);
 
   if (verifResult != "") {
     res.json({ error: "invalid IdClub" });
-    return
+    return;
   }
   const clubs = await Database.Read(
     DB_PATH,
@@ -45,7 +45,7 @@ exports.getOneClubById = async (req, res) => {
   );
   if (clubs.length == 0) {
     res.json({ error: "unknownClubId" });
-    return
+    return;
   }
   //take the president
   const president = await Database.Read(
@@ -55,9 +55,9 @@ exports.getOneClubById = async (req, res) => {
   );
   if (president.length == 0) {
     res.json({ error: "unknown president" });
-    return
+    return;
   }
-  
+
   // take the 2 last events
   const events = await Database.Read(
     DB_PATH,
@@ -65,18 +65,28 @@ exports.getOneClubById = async (req, res) => {
     club.idClub
   );
   if (events.length == 0) {
-    res.json({ club: clubs[0], president: president[0], event_one: "", event_two: ""});
-    return
+    res.json({
+      club: clubs[0],
+      president: president[0],
+      event_one: "",
+      event_two: "",
+    });
+    return;
   }
-  if (events.length == 1){
-    res.json({ club: clubs[0], president: president[0], event_one: events[0]});
+  if (events.length == 1) {
+    res.json({ club: clubs[0], president: president[0], event_one: events[0] });
   } else {
-    res.json({ club: clubs[0], president: president[0], event_one: events[0], event_two: events[1]});
-  }  
+    res.json({
+      club: clubs[0],
+      president: president[0],
+      event_one: events[0],
+      event_two: events[1],
+    });
+  }
 };
 
 exports.getClubByIdUser = async (req, res) => {
-  const club = req.body
+  const club = req.body;
   if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
@@ -88,9 +98,9 @@ exports.getClubByIdUser = async (req, res) => {
   );
   if (clubs.length == 0) {
     res.json({ idClub: "" });
-    return
+    return;
   }
-  let isAsso = (clubs[0].idClubParent == null)
+  let isAsso = clubs[0].idClubParent == null;
   res.json({ idClub: clubs[0].idClub, isAsso: isAsso });
 };
 
@@ -172,14 +182,27 @@ exports.getUserById = async (userId) => {
     { dataType: "userExistId", data: userId },
   ]);
   if (verifResult != "") {
-    res.json({ status: false, error: verifResult });
-    return;
+    return "invalidUserId";
   }
   const users = await Database.Read(
     DB_PATH,
     "SELECT * FROM users WHERE idUser=?;",
     userId
   );
+  return users[0];
+};
+
+exports.getUserByEmail = async (email) => {
+  const verifResult = Verif.ManageVerif([{ dataType: "email", data: email }]);
+  if (verifResult != "") {
+    return "invalidEmail";
+  }
+  const users = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM users WHERE email=?;",
+    email
+  );
+  if (users.length == 0) return "invalidEmail";
   return users[0];
 };
 
@@ -222,13 +245,13 @@ exports.getMemberRole = async (idClub, idUser) => {
 };
 
 exports.isUserInClub = async (userId, clubId) => {
-  const nbrMember = await Database.Read(
+  const user = await Database.Read(
     DB_PATH,
-    "SELECT COUNT(DISTINCT idUser) FROM membersClubs WHERE idUser = ? AND idClub = ?;",
+    "SELECT idUser FROM membersClubs WHERE idUser = ? AND idClub = ?;",
     userId,
     clubId
   );
-  res.json(nbrMember);
+  return user.length;
 };
 
 //EVENTS

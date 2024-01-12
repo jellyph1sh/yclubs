@@ -26,9 +26,10 @@ router.post("/users/add", stuffCtrlAdd.addUser);
 router.get("/clubsMembers/getNbrMembers", stuffCtrlGet.getNbrMembers);
 router.post("/clubsMembers/getMembersByClub", stuffCtrlGet.getMembersClub);
 router.post("/clubsMembers/add", stuffCtrlAdd.addClubMember);
-
+router.post("/clubsMembers/addEmail", stuffCtrlAdd.addClubMemberByEmail);
+// router.post("/clubsMembers/update", stuffCtrlUpdate.updateMember);
 router.post("/clubsMembers/updateRoles", stuffCtrlUpdate.updateRoleMember);
-
+router.delete('/clubsMembers/delete',stuffCtrlDelete.clubMember)
 
 // ROLES
 router.post("/roles/add", stuffCtrlAdd.addRole);

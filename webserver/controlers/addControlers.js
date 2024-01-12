@@ -319,3 +319,76 @@ exports.addTagToClub = async (req, res) => {
   }
   res.json({ status: true });
 };
+
+exports.addClubMemberByEmail = async (req, res) => {
+  if (!tokenFunc.verifyToken(req)) {
+    res.json({ status: false, error: "inexistantToken" });
+    return;
+  }
+  const data = req.body;
+  // 1)
+  let verifResult = Verif.ManageVerif([
+    { dataType: "email", data: data.email },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
+    return;
+  }
+  const userId = await stuffCtrlGet.getUserByEmail(data.email);
+  if (userId == "invalidEmail") {
+    res.json({ status: false, error: "invalidEmail" });
+    return
+  }
+  if (
+    (await stuffCtrlGet.getMemberRole(data.clubId, data.idUserConnected)) ==
+      "directeur" ||
+    true // temp condition because role system is not ready
+  ) {
+    const userInClub = await stuffCtrlGet.isUserInClub(
+      data.userId,
+      data.clubId
+    );
+    if (userInClub != 0) {
+      res.json({ status: false, error: "userAlreadyInClub" });
+      return;
+    }
+    const roleId = await Database.Read(
+      DB_PATH,
+      "SELECT idRole FROM roles WHERE name='membre';"
+    );
+    if (roleId.length == 0) {
+      const err = await Database.Write(
+        DB_PATH,
+        "INSERT INTO roles(name,description) VALUES(?,?);",
+        "membre",
+        "simple membre du club"
+      );
+      if (err != null) {
+        console.error(err);
+        res.json({ status: false, error: "cannot insert 'membre' role" });
+        return;
+      }
+      roleId = await Database.Read(
+        DB_PATH,
+        "SELECT idRole FROM roles WHERE name='membre';",
+        "membre"
+      );
+    }
+    console.log(userId);
+    const err = await Database.Write(
+      DB_PATH,
+      "INSERT INTO membersClubs(idClub,idUser,idRole) VALUES(?,?,?);",
+      data.clubId,
+      userId.idUser,
+      roleId[0].idRole
+    );
+    if (err != null) {
+      console.error(err);
+      res.json({ status: false, error: "cannot add this member to the club" });
+      return;
+    }
+    res.json({ status: true });
+  } else {
+    res.json({ status: false, error: "You don't have the permissions" });
+  }
+};
