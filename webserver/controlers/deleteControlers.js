@@ -110,3 +110,16 @@ exports.deleteClub = async (req, res) => {
   }
   res.json({ status: false });
 };
+
+exports.deleteClubOnCreate = async (idClub) => {
+  // delete club
+  err = await Database.Write(
+    DB_PATH,
+    "DELETE FROM clubs WHERE idClub=?;",
+    idClub
+  );
+  if (err != null) {
+    return;
+  }
+  return;
+};
