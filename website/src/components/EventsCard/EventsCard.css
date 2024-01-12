@@ -1,0 +1,105 @@
+@media screen and (min-width:600px) {
+    .ec-date {
+        font-size: 14px;
+    }
+
+    .ec-title {
+        font-size: 32px;
+    }
+
+    .ec-alias {
+        font-size: 24px;
+    }
+
+    .ec-desc {
+        font-size: 14px;
+    }
+
+    .ec-button {
+        font-size: 20px;
+    }
+}
+
+@media screen and (max-width:600px) {
+    .ec-date {
+        font-size: 7px;
+    }
+
+    .ec-title {
+        font-size: 16px;
+    }
+
+    .ec-alias {
+        font-size: 12px;
+    }
+
+    .ec-desc {
+        font-size: 7px;
+    }
+
+    .ec-button {
+        font-size: 10px;
+    }
+}
+
+.ec-box {
+    position: relative;
+    background-color: white;
+    color: #5C5C5C;
+    width: 34vw;
+    height: 23vh;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.ec-date {
+    position: absolute;
+    top: 0.5em;
+    left: 0.5em;
+    font-weight: 500;
+}
+
+.ec-titles {
+    margin-top: 0.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ec-title {
+    font-weight: bold;
+}
+
+.ec-alias {
+    font-weight: normal;
+}
+
+.ec-desc {
+    margin: 1em 0.5em;
+    height: 26%;
+    font-weight: normal;
+    overflow-y: scroll;
+}
+
+.ec-desc::-webkit-scrollbar {
+    display: none;
+}
+
+.ec-button {
+    margin-right: 0.5em;
+    padding: 0.5em 3em;
+    border-radius: 10px;
+    font-weight: bold;
+    background-color: #23B2A4;
+    float: right;
+}
+
+.ec-button:hover {
+    color: #23B2A4;
+    background-color: white;
+    border: 1px solid #23B2A4;
+}
+
+.ec-button:focus {
+    outline: none;
+}

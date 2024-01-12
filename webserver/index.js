@@ -14,10 +14,7 @@ app.use((_req, res, next) => {
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
   );
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+  res.header("Access-Control-Allow-Headers","*");
   next();
 });
 app.use("/api", stuffRoutes);
@@ -26,3 +23,14 @@ app.listen(PORT, () => {
   console.log("Server started ! http://localhost:3001");
   console.log(`Server now listening on ${PORT}`);
 });
+
+// res.header("Access-Control-Allow-Origin", "*");
+// res.header(
+//   "Access-Control-Allow-Methods",
+//   "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+// );
+// res.header(
+//   "Access-Control-Allow-Headers",
+//   "Origin, X-Requested-With, Content-Type, Accept",
+
+// );

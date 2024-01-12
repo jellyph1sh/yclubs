@@ -12,7 +12,9 @@ function Login() {
     await axios.post("http://localhost:3001/api/users/login", {email: e.target.email.value, password: e.target.password.value})
       .then((res) => {
         if (res.data.isLogin) {
+          console.log(res.data.token)
           setCookie("user", JSON.parse(res.data.user).idUser, { path: "/" });
+          setCookie("token", res.data.token, { path: "/" });
           navigate("/");
           return;
         }

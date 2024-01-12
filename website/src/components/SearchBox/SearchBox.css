@@ -1,0 +1,75 @@
+@media screen and (min-width:600px) {
+    .sb-box img {
+        width: 48px;
+        height: 48px;
+    }
+
+    .sb-bar input, .sb-bar input::placeholder {
+        font-size: 22px;
+    }
+
+    .sb-bar img {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+@media screen and (max-width:600px) {
+    .sb-box img {
+        width: 29px;
+        height: 29px;
+    }
+
+    .sb-bar input, .sb-bar input::placeholder {
+        font-size: 11px;
+    }
+
+    .sb-bar img {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.sb-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.sb-box img {
+    filter: invert(100%);
+}
+
+.sb-box img:hover {
+    cursor: pointer;
+}
+
+.sb-bar {
+    display: flex;
+    width: 33%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border: 2px solid white;
+    border-radius: 50px;
+    padding: 0.5em 1em;
+    margin-right: 0.5em;
+}
+
+.sb-bar input {
+    width: 95%;
+    outline: none;
+    color: white;
+    background-color: rgba(255, 255, 255, 0.0);
+    border: none;
+}
+
+.sb-bar input::placeholder {
+    color: white;
+    font-weight: lighter;
+}
+
+.sb-bar img {
+    filter: invert(100%);
+}

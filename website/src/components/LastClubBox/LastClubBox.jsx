@@ -1,20 +1,28 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useCookies } from "react-cookie";
 import "./LastClubBox.css"
 
 const LastClubBox = () => {
     const [lastClub, setLastClub] = useState([]);
+    const [cookies, setCookies] = useCookies(["token"]);
 
+    const config = {
+        headers: { Authorization: `Bearer ${cookies.token}`,
+        "Content-Type": "application/json",
+        }
+    };
 
     useEffect(() => {
-        axios.get("http://localhost:3001/api/clubs/getLast")
+        console.log("useeffect used")
+        axios.get("http://localhost:3001/api/clubs/getLast",config)
         .then((response) => {
-            setLastClub(response.data["club"]);
+            setLastClub(response.data["club"])
         })
         .catch(function (error) {
             console.log(error);
         })
-    });
+    },[]);
 
     return (
         <div className="lc-box">

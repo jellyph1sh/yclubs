@@ -1,17 +1,16 @@
 const jwt = require("jsonwebtoken");
 
-const SECRET_TOKEN = "clubs ynov secret token oiubfeiojebijzo";
+const SECRET_TOKEN = "clubsynov";
 
 exports.verifyToken = (req) => {
-  const token = req.data["token"];
+  const token = req.headers["authorization"].split(" ")[1];
   if (!token) {
     return false;
   }
   const decodedToken = jwt.verify(token, SECRET_TOKEN);
-  console.log(decodedToken)
   return { userId: decodedToken.userId, email: decodedToken.email };
 };
-
+// 
 exports.createToken = (userId, email) => {
   return jwt.sign(
     {
