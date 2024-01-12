@@ -50,6 +50,7 @@ exports.getOneClubById = async (req, res) => {
     res.json({ error: "unknownClubId" });
     return
   }
+  //take the president
   const president = await Database.Read(
     DB_PATH,
     "SELECT roles.description, users.lastname, users.firstname FROM membersClubs INNER JOIN roles on roles.idRole = membersClubs.idRole INNER JOIN users on users.idUser = membersClubs.idUser WHERE membersClubs.idClub=? AND membersClubs.idRole = 2;",
@@ -59,12 +60,13 @@ exports.getOneClubById = async (req, res) => {
     res.json({ error: "unknown president" });
     return
   }
+  
+  // take the 2 last events
   const events = await Database.Read(
     DB_PATH,
     "SELECT * FROM events WHERE idClub=? ORDER BY idEvent DESC LIMIT 2;",
     club.idClub
   );
-  
   if (events.length == 0) {
     res.json({ club: clubs[0], president: president[0], event_one: "", event_two: ""});
     return
@@ -73,8 +75,26 @@ exports.getOneClubById = async (req, res) => {
     res.json({ club: clubs[0], president: president[0], event_one: events[0]});
   } else {
     res.json({ club: clubs[0], president: president[0], event_one: events[0], event_two: events[1]});
+  }  
+};
+
+exports.getClubByIdUser = async (req, res) => {
+  const club = req.body
+  if (!tokenFunc.verifyToken(req)) {
+    res.json({ status: false, error: "inexistantToken" });
+    return;
   }
-  
+  const clubs = await Database.Read(
+    DB_PATH,
+    "SELECT membersClubs.idClub, clubs.idClubParent FROM membersClubs INNER JOIN clubs on clubs.idClub = membersClubs.idClub WHERE membersClubs.idUser=? AND membersClubs.idRole = 2;",
+    club.idUser
+  );
+  if (clubs.length == 0) {
+    res.json({ idClub: "" });
+    return
+  }
+  let isAsso = (clubs[0].idClubParent == null)
+  res.json({ idClub: clubs[0].idClub, isAsso: isAsso });
 };
 
 exports.getLastClubs = async (req, res) => {

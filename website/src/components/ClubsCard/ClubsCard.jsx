@@ -8,7 +8,6 @@ const ClubsCard = (props) => {
     const [cookies, setCookie] = useCookies(["idClub"]);
 
     const navigateToClub = () => {
-        console.log(props.info.idClub)
         setCookie("idClub",props.info.idClub  , { path: "/" });
         navigate('/club');
         
