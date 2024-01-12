@@ -60,8 +60,8 @@ const NaviguationBar = () => {
                         <Link to={"/"}>Accueil</Link>
                         <Link to={"/explore"}>Clubs</Link>
                         <Link to={"/events"}>Evenements</Link>
-                        { isClub ?<><Link onClick={navigateToClub} to={"/"}>Gérer son club</Link></>:<></> }
-                        { isAsso_two ?<><Link onClick={navigateToClub} to={"/"}>Gérer son association</Link></>:<></> }
+                        { isClub ?<><Link onClick={navigateToClub} to={"/admin-club"}>Gérer son club</Link></>:<></> }
+                        { isAsso_two ?<><Link onClick={navigateToClub} to={"/admin-asso"}>Gérer son association</Link></>:<></> }
                     </div>
                 </div>
                 <div className="nav-bottom-buttons">
