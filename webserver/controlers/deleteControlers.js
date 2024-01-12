@@ -69,7 +69,7 @@ exports.deleteClub = async (req, res) => {
   }
   const tokenResult = tokenFunc.verifToken(req);
   if (
-    (await stuffCtrlGet.getMemberRole(tag.idClub, tokenResult.idUser)) ==
+    (await stuffCtrlGet.getMemberRole(club.idClub, tokenResult.idUser)) ==
       "directeur" ||
     tokenResult != false
   ) {
