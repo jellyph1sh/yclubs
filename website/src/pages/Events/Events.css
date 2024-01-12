@@ -2,11 +2,19 @@
     .events-title {
         font-size: 48px;
     }
+
+    .events-no-cards {
+        font-size: 24px;
+    }
 }
 
 @media screen and (max-width:600px) {
     .events-title {
         font-size: 29px;
+    }
+
+    .events-no-cards {
+        font-size: 12px;
     }
 }
 
@@ -30,4 +38,8 @@
     flex-direction: column;
     align-items: center;
     gap: 4em;
+}
+
+.events-no-cards {
+    font-weight: bold;
 }

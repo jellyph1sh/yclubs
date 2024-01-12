@@ -40,9 +40,11 @@ const Events = () => {
                 <SearchBox/>
                 <div className="events-cards">
                     {
-                    events.map(event => (
-                        <EventsCard info={event}/>
-                    ))
+                        events.length == 0
+                        ? <p className="events-no-cards">Aucun évènements</p> :
+                        events.map(event => (
+                            <EventsCard info={event}/>
+                        ))
                     }
                 </div>
             </div>
