@@ -1,0 +1,65 @@
+@media screen and (min-width:600px) {
+}
+
+@media screen and (max-width:600px) {
+}
+
+.clb-box {
+    position: absolute;
+    top: 52.5vh;
+    left: 2vw;
+    width: 25vw;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 20px;
+    color: #5C5C5C;
+    overflow: hidden;
+    box-shadow: 5px 5px rgba(0, 0, 0, 0.25);
+}
+
+.clb-title {
+    margin: 0.5em;
+    font-size: 24px;
+    text-align: center;
+}
+
+.clb-clubs {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5em 1em;
+    height: 35vh;
+    overflow-y: scroll;
+}
+
+.clb-clubs::-webkit-scrollbar {
+    display: none;
+}
+
+.club {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.club-name {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.club-description {
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.club img {
+    width: 24px;
+    height: 24px;
+    filter: invert(50%);
+}
+
+.club img:hover {
+    cursor: pointer;
+}
