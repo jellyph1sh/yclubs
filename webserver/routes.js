@@ -12,9 +12,11 @@ router.get("/clubs/getLast", stuffCtrlGet.getLastClubs);
 router.post("/clubs/getOneById", stuffCtrlGet.getOneClubById);
 router.post("/clubs/getClubByIdUser", stuffCtrlGet.getClubByIdUser);
 router.get("/clubs/getNbrClub", stuffCtrlGet.getNbrClubs);
+router.post("/clubs/getAdminPage", stuffCtrlGet.getClubAdminPage);
 router.post("/clubs/add", stuffCtrlAdd.addClub);
 router.post("/clubs/update", stuffCtrlUpdate.updateClub);
-router.delete('/clubs/delete',stuffCtrlDelete.deleteClub)
+// router.post("/clubs/updateName", stuffCtrlUpdate.updateClubName);
+router.delete("/clubs/delete", stuffCtrlDelete.deleteClub);
 
 // USERS
 router.get("/users/getall", stuffCtrlGet.getAllUsers);

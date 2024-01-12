@@ -1,4 +1,5 @@
 const stuffCtrlGet = require("../controlers/getControlers.js");
+const moment = require("moment");
 
 const VerifInput = (s) => {
   // return true if the input is valide else false
@@ -115,14 +116,15 @@ exports.ManageVerif = (elementsToCheck) => {
         break;
       case "date":
         if (
-          isNaN(moment(event.date, "DD/MM/YYYY").toDate()) ||
-          !VerifInput(event.date)
+          isNaN(moment(element.data, "YYYY/MM/DD").toDate()) ||
+          !VerifInput(element.data)
         ) {
           return "invalidDate";
         }
         break;
       case "alias":
         if (!VerifName(element.data, 2, 4)) {
+          console.log(element.data);
           return "invalidAlias";
         }
         break;
@@ -150,7 +152,7 @@ exports.ManageVerif = (elementsToCheck) => {
         break;
       case "userExistId":
         if (
-          !isNaN(stuffCtrlGet.getUserById(element.data)) ||
+          stuffCtrlGet.getUserById(element.data) == 0 ||
           isNaN(parseInt(element.data))
         ) {
           return "invalidUserId";
@@ -158,13 +160,15 @@ exports.ManageVerif = (elementsToCheck) => {
         break;
       case "clubExistId":
         if (
-          !isNaN(stuffCtrlGet.getUserById(element.data)) ||
+          stuffCtrlGet.getClubById(element.data).length == 0 ||
           isNaN(parseInt(element.data))
         ) {
+          console.log(element.data);
           return "invalidClubId";
         }
         break;
       default:
+        console.log("invalid datatype verifinput", element.dataType);
         return "invalidDataType";
     }
   }
