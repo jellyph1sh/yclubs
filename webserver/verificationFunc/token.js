@@ -10,7 +10,7 @@ exports.verifyToken = (req) => {
   const decodedToken = jwt.verify(token, SECRET_TOKEN);
   return { userId: decodedToken.userId, email: decodedToken.email };
 };
-
+// 
 exports.createToken = (userId, email) => {
   return jwt.sign(
     {
