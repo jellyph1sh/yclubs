@@ -31,6 +31,52 @@ exports.getOneClubByName = async (clubName) => {
   return clubs[0];
 };
 
+exports.getOneClubById = async (req, res) => {
+  const club = req.body
+  const verifResult = Verif.ManageVerif([
+    { dataType: "id", data: club.idClub },
+  ]);
+
+  if (verifResult != "") {
+    res.json({ error: "invalid IdClub" });
+    return
+  }
+  const clubs = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM clubs WHERE idClub=?;",
+    club.idClub
+  );
+  if (clubs.length == 0) {
+    res.json({ error: "unknownClubId" });
+    return
+  }
+  const president = await Database.Read(
+    DB_PATH,
+    "SELECT roles.description, users.lastname, users.firstname FROM membersClubs INNER JOIN roles on roles.idRole = membersClubs.idRole INNER JOIN users on users.idUser = membersClubs.idUser WHERE membersClubs.idClub=? AND membersClubs.idRole = 2;",
+    club.idClub
+  );
+  if (president.length == 0) {
+    res.json({ error: "unknown president" });
+    return
+  }
+  const events = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM events WHERE idClub=? ORDER BY idEvent DESC LIMIT 2;",
+    club.idClub
+  );
+  
+  if (events.length == 0) {
+    res.json({ club: clubs[0], president: president[0], event_one: "", event_two: ""});
+    return
+  }
+  if (events.length == 1){
+    res.json({ club: clubs[0], president: president[0], event_one: events[0]});
+  } else {
+    res.json({ club: clubs[0], president: president[0], event_one: events[0], event_two: events[1]});
+  }
+  
+};
+
 exports.getLastClubs = async (req, res) => {
   if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
@@ -165,7 +211,6 @@ exports.isUserInClub = async (userId, clubId) => {
     userId,
     clubId
   );
-  console.log(nbrMember);
   res.json(nbrMember);
 };
 
