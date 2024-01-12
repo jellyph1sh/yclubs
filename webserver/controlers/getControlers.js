@@ -6,10 +6,7 @@ const tokenFunc = require("../verificationFunc/token.js");
 
 // CLUBS
 exports.getClubs = async (_req, res) => {
-  const clubs = await Database.Read(
-    DB_PATH,
-    "SELECT * FROM clubs;"
-  );
+  const clubs = await Database.Read(DB_PATH, "SELECT * FROM clubs;");
   res.json({ clubs: clubs });
 };
 
@@ -259,4 +256,32 @@ exports.getOneRoleByName = async (roleName) => {
     roleName
   );
   return roles[0];
+};
+
+exports.getClubAdminPage = async (req, res) => {
+  const data = req.body;
+  const verifResult = Verif.ManageVerif([
+    { dataType: "clubExistId", data: data.idClub },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
+    return;
+  }
+  const club = await this.getClubById(data.idClub);
+  const members = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM users JOIN membersClubs ON users.idUser = membersClubs.idUser WHERE idClub = ?;",
+    data.idClub
+  );
+  const events = await Database.Read(
+    DB_PATH,
+    "SELECT * FROM events WHERE idClub = ?",
+    data.idClub
+  );
+  res.json({
+    status: true,
+    club: club,
+    members: members,
+    events: events,
+  });
 };

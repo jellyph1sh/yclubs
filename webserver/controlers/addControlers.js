@@ -3,7 +3,9 @@ const DB_PATH = "./clubs.db";
 const Verif = require("../verificationFunc/verifInput.js");
 const moment = require("moment");
 const hashFunc = require("../verificationFunc/password.js");
+const tokenFunc = require("../verificationFunc/token.js");
 const stuffCtrlGet = require("./getControlers.js");
+const stuffCtrlDelete = require("./deleteControlers.js");
 
 // 1) Verification of incoming data :
 //    - stop the request if there is a problem with incoming data
@@ -13,38 +15,32 @@ const stuffCtrlGet = require("./getControlers.js");
 //
 // 3) Adding tags and link them with the newly created club
 exports.addClub = async (req, res) => {
-  if (!tokenFunc.verifToken(req)) {
+  if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
   const club = req.body;
   // 1)
-  const verifResult = Verif.ManageVerif([
-    { dataType: "clubName", data: club.name },
-    { dataType: "description", data: club.description },
-    { dataType: "parentClubName", data: club.parentClubName },
-    { dataType: "alias", data: club.alias },
-    { dataType: "capital", data: club.capital },
-    { dataType: "tags", data: club.tags },
-  ]);
-  if (verifResult != "") {
-    res.json({ status: false, error: verifResult });
-    return;
-  }
+  // const verifResult = Verif.ManageVerif([
+  //   { dataType: "clubName", data: club.name },
+  //   { dataType: "description", data: club.description },
+  //   { dataType: "id", data: club.idClub },
+  //   { dataType: "alias", data: club.alias },
+  //   { dataType: "capital", data: club.capital },
+  //   { dataType: "tags", data: club.tags },
+  // ]);
+  
+  // if (verifResult != "") {
+  //   res.json({ status: false, error: verifResult });
+  //   return;
+  // }
+  
   // 2)
-  let parentClubId = null;
-  if (club.parentClubName != "none") {
-    parentClubId = await Database.Read(
-      DB_PATH,
-      "SELECT name FROM clubs WHERE name=?;",
-      club.parentClubName
-    );
-  }
   let err = await Database.Write(
     DB_PATH,
     "INSERT INTO clubs(idClubParent,name,description,capital,alias,image) VALUES(?,?,?,?,?,?)",
-    parentClubId,
-    club.clubName,
+    club.idClubParent,
+    club.name,
     club.description,
     parseInt(club.capital),
     club.alias,
@@ -55,14 +51,57 @@ exports.addClub = async (req, res) => {
     res.json({ status: false, errorType: err.code });
     return;
   }
+  
   // 3)
-  const tags = club.tags.split(" ");
+  
   let clubId = await Database.Read(
     DB_PATH,
     "SELECT idClub FROM clubs WHERE name=?;",
-    club.clubName
+    club.name
   );
   clubId = clubId[0].idClub;
+
+  //create the president of the club
+  let president = await Database.Read(
+    DB_PATH,
+    "SELECT idUser FROM users WHERE email=?;",
+    club.email
+  );
+  if (president.length == 0){
+    res.json({ status: false, error: "adresse mail not found" });
+    return;
+  }
+  if (president.length == 0){
+    res.json({ status: false, error: "adresse mail not found" });
+    return;
+  }
+  let presidentId = president[0].idUser;
+
+  let alreadyExist = await Database.Read(
+    DB_PATH,
+    "SELECT idUser FROM membersClubs WHERE idUser=? AND idRole = 2;",
+    presidentId
+  );
+ 
+  if (alreadyExist.length != 0){
+    stuffCtrlDelete.deleteClubOnCreate(clubId);
+    res.json({ status: false, error: "adresse mail déja président" });
+    return;
+  }
+
+  err = await Database.Write(
+    DB_PATH,
+    "INSERT INTO membersClubs(idClub,idUser,idRole) VALUES(?,?,2);",
+    clubId,
+    presidentId
+  );
+  if (err != null) {
+    console.error(err);
+    res.json({ status: false, errorType: err.code });
+    return;
+  }
+  // create the tags
+  const tags = club.tags.split(" ");
   for (const tag of tags) {
     err = await Database.Write(
       DB_PATH,
@@ -138,7 +177,7 @@ exports.addUser = async (req, res) => {
 //
 // 2) Adding a new member to a club with a role
 exports.addClubMember = async (req, res) => {
-  if (!tokenFunc.verifToken(req)) {
+  if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
@@ -192,7 +231,7 @@ exports.addClubMember = async (req, res) => {
 };
 
 exports.addRole = async (req, res) => {
-  if (!tokenFunc.verifToken(req)) {
+  if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
@@ -221,7 +260,7 @@ exports.addRole = async (req, res) => {
 };
 
 exports.addEvent = async (req, res) => {
-  if (!tokenFunc.verifToken(req)) {
+  if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
@@ -229,14 +268,14 @@ exports.addEvent = async (req, res) => {
   const verifResult = Verif.ManageVerif([
     { dataType: "name", data: event.name },
     { dataType: "description", data: event.description },
-    { dataType: "name", data: event.name },
+    { dataType: "clubExistId", data: event.idClub },
     { dataType: "date", data: event.date },
   ]);
   if (verifResult != "") {
     res.json({ status: false, error: verifResult });
     return;
   }
-  const date = moment(event.date, "DD/MM/YYYY").toDate();
+  const date = moment(event.date, "YYYY/MM/DD").toDate();
   const err = await Database.Write(
     DB_PATH,
     "INSERT INTO events(idClub,name,description,date) VALUES(?,?,?,?);",
@@ -247,14 +286,14 @@ exports.addEvent = async (req, res) => {
   );
   if (err != null) {
     console.error(err);
-    res.json({ status: false });
+    res.json({ status: false, error: err });
     return;
   }
   res.json({ status: true });
 };
 
 exports.addTagToClub = async (req, res) => {
-  if (!tokenFunc.verifToken(req)) {
+  if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
