@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import ClubInfo from "../../components/ClubInfo/ClubInfo";
 import MembersBox from "../../components/MembersBox/MembersBox";
 import EventsClubAdmin from "../../components/EventsClubAdmin/EventsClubAdmin";
+import CreateEvent from "../../components/CreateEvent/CreateEvent";
 
 const AdminClub = () => {
     /*const [cookies] = useCookies(["user", "token"]);
@@ -27,6 +28,7 @@ const AdminClub = () => {
                     <ClubInfo/>
                     <MembersBox/>
                     <EventsClubAdmin/>
+                    <CreateEvent/>
                 </div>
             </div>
         </>
