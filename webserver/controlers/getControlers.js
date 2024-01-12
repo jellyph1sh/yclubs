@@ -173,7 +173,7 @@ exports.isUserInClub = async (userId, clubId) => {
 exports.getEvents = async (_req, res) => {
   const events = await Database.Read(
     DB_PATH,
-    "SELECT idEvent,idClub,name,description FROM events;"
+    "SELECT events.name AS name, events.description AS description, events.date AS date, clubs.alias AS alias FROM events JOIN clubs ON clubs.idClub = events.idClub;"
   );
   res.json({ events: events });
 };
