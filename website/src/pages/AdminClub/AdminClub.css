@@ -1,0 +1,24 @@
+@media screen and (min-width:600px) {
+    .ac-title {
+        font-size: 48px;
+    }
+}
+
+@media screen and (max-width:600px) {
+    .ac-title {
+        font-size: 29px;
+    }
+}
+
+.ac-box {
+    position: absolute;
+    top: 0vh;
+    left: 20vw;
+    width: 80vw;
+}
+
+.ac-title {
+    margin: 1em 1em;
+    font-weight: bold;
+    text-shadow: 5px 5px rgba(0,0,0,0.25);
+}
