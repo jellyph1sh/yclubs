@@ -41,7 +41,7 @@ router.delete("/tags/deleteToClubs", stuffCtrlDelete.deleteTagClub);
 router.get("/events/getall", stuffCtrlGet.getEvents);
 router.get("/events/get3Last", stuffCtrlGet.getThreeLastEvents);
 router.post("/events/add", stuffCtrlAdd.addEvent);
-// router.get("/events/getClub", stuffCtrlGet.getClubEvent);
+router.delete("/events/delete", stuffCtrlDelete.deleteEvent);
 
 // CAPITAL
 router.post("/capital/update", stuffCtrlUpdate.updateCapitalClub);

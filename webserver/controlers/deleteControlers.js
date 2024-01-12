@@ -35,6 +35,29 @@ exports.deleteTagClub = async (req, res) => {
   res.json({ status: false });
 };
 
+exports.deleteEvent = async (req, res) => {
+  const event = req.body;
+  const verifResult = Verif.ManageVerif([
+    { dataType: "id", data: event.idEvent },
+  ]);
+  if (verifResult != "") {
+    res.json({ status: false, error: verifResult });
+    return;
+  }
+  const tokenResult = tokenFunc.verifToken(req);
+  err = await Database.Write(
+    DB_PATH,
+    "DELETE FROM events WHERE idEvent=?;",
+    event.idEvent
+  );
+  if (err != null) {
+    console.error(err);
+    res.json({ status: false });
+    return;
+  }
+  res.json({ status: true });
+};
+
 exports.deleteClub = async (req, res) => {
   const club = req.body;
   const verifResult = Verif.ManageVerif([
