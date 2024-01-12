@@ -14,28 +14,14 @@ const stuffCtrlDelete = require("./deleteControlers.js");
 // 2) Adding club in database
 //
 // 3) Adding tags and link them with the newly created club
+
 exports.addClub = async (req, res) => {
   if (!tokenFunc.verifyToken(req)) {
     res.json({ status: false, error: "inexistantToken" });
     return;
   }
   const club = req.body;
-  // 1)
-  // const verifResult = Verif.ManageVerif([
-  //   { dataType: "clubName", data: club.name },
-  //   { dataType: "description", data: club.description },
-  //   { dataType: "id", data: club.idClub },
-  //   { dataType: "alias", data: club.alias },
-  //   { dataType: "capital", data: club.capital },
-  //   { dataType: "tags", data: club.tags },
-  // ]);
-  
-  // if (verifResult != "") {
-  //   res.json({ status: false, error: verifResult });
-  //   return;
-  // }
-  
-  // 2)
+
   let err = await Database.Write(
     DB_PATH,
     "INSERT INTO clubs(idClubParent,name,description,capital,alias,image) VALUES(?,?,?,?,?,?)",
