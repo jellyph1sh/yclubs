@@ -6,8 +6,8 @@
 
 .crc-box {
     position: absolute;
-    top: 20vh;
-    left: 25vw;
+    top: 45vh;
+    left: 60vw;
     width: fit-content;
     height: fit-content;
     display: flex;

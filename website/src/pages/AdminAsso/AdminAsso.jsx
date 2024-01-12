@@ -7,6 +7,7 @@ import MembersBox from "../../components/MembersBox/MembersBox";
 import EventsClubAdmin from "../../components/EventsClubAdmin/EventsClubAdmin";
 import CreateEvent from "../../components/CreateEvent/CreateEvent";
 import CreateClub from "../../components/CreateClub/CreateClub";
+import TransferBox from "../../components/TransferBox/TransferBox";
 
 const AdminAsso = () => {
     /*const [cookies] = useCookies(["user", "token"]);
@@ -30,6 +31,7 @@ const AdminAsso = () => {
                     <MembersBox/>
                     <EventsClubAdmin/>
                     <CreateEvent/>
+                    <TransferBox/>
                 </div>
             </div>
         </>

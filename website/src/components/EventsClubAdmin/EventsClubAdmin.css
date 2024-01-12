@@ -6,8 +6,8 @@
 
 .eca-box {
     position: absolute;
-    top: 55vh;
-    left: 50vw;
+    top: 10vh;
+    left: 30vw;
     width: 30%;
     height: fit-content;
     display: flex;
