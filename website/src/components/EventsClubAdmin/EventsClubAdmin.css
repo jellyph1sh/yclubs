@@ -1,0 +1,65 @@
+@media screen and (min-width:600px) {
+}
+
+@media screen and (max-width:600px) {
+}
+
+.eca-box {
+    position: absolute;
+    top: 10vh;
+    left: 30vw;
+    width: 30%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 20px;
+    color: #5C5C5C;
+    overflow: hidden;
+    box-shadow: 5px 5px rgba(0, 0, 0, 0.25);
+}
+
+.eca-title {
+    margin: 0.5em;
+    text-align: center;
+}
+
+.eca-events {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5em 1em;
+    height: 30vh;
+    overflow-y: scroll;
+    gap: 2em;
+}
+
+.eca-events::-webkit-scrollbar {
+    display: none;
+}
+
+.event {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: 5vh;
+}
+
+.event-header {
+    display: flex;
+    flex-direction: column;
+}
+
+.event img {
+    width: 24px;
+    height: 24px;
+    filter: invert(50%);
+}
+
+.event img:hover {
+    cursor: pointer;
+}
+
+.event-desc {
+    text-align: left;
+}

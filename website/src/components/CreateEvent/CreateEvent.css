@@ -1,0 +1,55 @@
+@media screen and (min-width:600px) {
+}
+
+@media screen and (max-width:600px) {
+}
+
+.ce-box {
+    position: absolute;
+    top: 10vh;
+    left: 60vw;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 20px;
+    color: #5C5C5C;
+    overflow: hidden;
+    box-shadow: 5px 5px rgba(0, 0, 0, 0.25);
+}
+
+.ce-title {
+    margin: 0.5em;
+    text-align: center;
+}
+
+.ce-inputs {
+    margin: 1em;
+    display: flex;
+    flex-direction: column;
+}
+
+.ce-name, .ce-date, .ce-desc {
+    display: flex;
+    flex-direction: column;
+}
+
+.ce-inputs label {
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.ce-inputs input, .ce-inputs textarea {
+    background-color: rgba(0, 0, 0, 0.0);
+    border: 1px solid #5C5C5C;
+    border-radius: 5px;
+    resize: none;
+    color: #5C5C5C;
+    padding: 0.25em 0.5em;
+    font-size: 14px;
+}
+
+.ci-info input:focus, .ci-info textarea:focus {
+    outline: none;
+}

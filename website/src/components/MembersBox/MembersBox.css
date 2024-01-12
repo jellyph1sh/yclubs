@@ -1,0 +1,83 @@
+@media screen and (min-width:600px) {
+}
+
+@media screen and (max-width:600px) {
+}
+
+.mb-box {
+    position: absolute;
+    top: 52.5vh;
+    left: 31vw;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 20px;
+    color: #5C5C5C;
+    overflow: hidden;
+    box-shadow: 5px 5px rgba(0, 0, 0, 0.25);
+}
+
+.mb-title {
+    margin: 0.5em;
+    text-align: center;
+}
+
+.mb-members {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5em 1em;
+    height: 30vh;
+    overflow-y: scroll;
+}
+
+.mb-members::-webkit-scrollbar {
+    display: none;
+}
+
+.member {
+    display: flex;
+    flex-direction: row;
+}
+
+.member img {
+    width: 24px;
+    height: 24px;
+    filter: invert(50%);
+}
+
+.member img:hover {
+    cursor: pointer;
+}
+
+.mb-add-member {
+    margin: 1em 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#input-addmember {
+    background-color: rgba(0, 0, 0, 0.0);
+    border: 1px solid #5C5C5C;
+    border-radius: 5px;
+    color: #5C5C5C;
+    padding: 0 0.5em;
+    font-size: 16px;
+    margin: 0 0.5em;
+}
+
+.mb-add-member button {
+    background-color: #23B2A4;
+}
+
+.mb-add-member button:hover {
+    background-color: white;
+    color: #23B2A4;
+    border: 1px solid #23B2A4;
+}
+
+.mb-add-member button:focus {
+    outline: none;
+}

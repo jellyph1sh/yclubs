@@ -1,0 +1,70 @@
+@media screen and (min-width:600px) {
+}
+
+@media screen and (max-width:600px) {
+}
+
+.crc-box {
+    position: absolute;
+    top: 45vh;
+    left: 60vw;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 20px;
+    color: #5C5C5C;
+    overflow: hidden;
+    box-shadow: 5px 5px rgba(0, 0, 0, 0.25);
+}
+
+.crc-title {
+    margin: 0.5em;
+    text-align: center;
+}
+
+.crc-inputs {
+    margin: 1em;
+    display: flex;
+    flex-direction: column;
+}
+
+.crc-name, .crc-alias, .crc-desc, .crc-tags, .crc-image, .crc-balance, .crc-balance, .crc-chief {
+    display: flex;
+    flex-direction: column;
+}
+
+.crc-inputs label {
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.crc-inputs input, .crc-inputs textarea {
+    background-color: rgba(0, 0, 0, 0.0);
+    border: 1px solid #5C5C5C;
+    border-radius: 5px;
+    resize: none;
+    color: #5C5C5C;
+    padding: 0.25em 0.5em;
+    font-size: 14px;
+}
+
+.crc-info input:focus, .crc-info textarea:focus {
+    outline: none;
+}
+
+.crc-inputs button {
+    margin-top: 0.5em;
+    background-color: #23B2A4;
+}
+
+.crc-inputs button:hover {
+    background-color: white;
+    color: #23B2A4;
+    border: 1px solid #23B2A4;
+}
+
+.crc-inputs button:focus {
+    outline: none;
+}
