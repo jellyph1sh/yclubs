@@ -158,9 +158,10 @@ exports.ManageVerif = (elementsToCheck) => {
         break;
       case "clubExistId":
         if (
-          !isNaN(stuffCtrlGet.getUserById(element.data)) ||
+          stuffCtrlGet.getClubById(element.data).length == 0 ||
           isNaN(parseInt(element.data))
         ) {
+          console.log(element.data);
           return "invalidClubId";
         }
         break;
