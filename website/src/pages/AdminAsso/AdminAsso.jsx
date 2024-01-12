@@ -9,9 +9,10 @@ import CreateEvent from "../../components/CreateEvent/CreateEvent";
 import CreateClub from "../../components/CreateClub/CreateClub";
 import TransferBox from "../../components/TransferBox/TransferBox";
 import ClubsListBox from "../../components/ClubsListBox/ClubsListBox";
+import { useEffect, useState } from "react";
 
 const AdminAsso = () => {
-    /*const [cookies] = useCookies(["user", "token"]);
+    const [cookies] = useCookies(["user", "token"]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -19,7 +20,7 @@ const AdminAsso = () => {
             navigate("/login");
             return;
         }
-    }, [])*/
+    }, [])
 
     return (
         <>
